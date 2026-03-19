@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import styled from "styled-components";
 
 const HeroContainer = styled.section`
@@ -49,16 +50,13 @@ const CtaButton = styled.button`
 `;
 
 export default function Hero() {
+  const t = useTranslations("Hero");
   return (
     <HeroContainer>
-      <Name>Ted Chiu Ka Ho</Name>
-      <Title>Senior Analysis Programmer</Title>
-      {/* //TODO: calc the year so that i don't need to update it */}
-      <Bio>
-        A passionate developer with 5 years of experience, dedicated to crafting
-        scalable backend system and intuitive frontend experiences.
-      </Bio>
-      <CtaButton>View My Work</CtaButton>
+      <Name>{t("name")}</Name>
+      <Title>{t("title")}</Title>
+      <Bio>{t("bio")}</Bio>
+      <CtaButton>{t("button")}</CtaButton>
     </HeroContainer>
   );
 }

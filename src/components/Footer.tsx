@@ -1,5 +1,6 @@
 "use client";
 
+import { Link } from "@/i18n/navigation";
 import styled from "styled-components";
 
 const ICONS = {

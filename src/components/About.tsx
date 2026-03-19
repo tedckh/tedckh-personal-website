@@ -2,6 +2,7 @@
 
 import styled from "styled-components";
 import SectionContainer from "./SectionContainer";
+import { useTranslations } from "next-intl";
 
 const AboutContent = styled.div``;
 
@@ -51,10 +52,11 @@ const bioTexts = [
 ];
 
 export default function About() {
+  const t = useTranslations("About");
   return (
     <SectionContainer>
       <AboutContent>
-        <SectionTitle>About Me</SectionTitle>
+        <SectionTitle>{t("title")}</SectionTitle>
         <AboutGrid>
           <BioText>
             {bioTexts.map((text, index) => (
