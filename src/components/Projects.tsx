@@ -3,14 +3,13 @@
 import styled from "styled-components";
 import { projects } from "@/data/projects";
 import ProjectCard from "./ProjectCard";
+import SectionContainer from "./SectionContainer";
 
-const ProjectsContainer = styled.section`
-  margin-top: 100px;
-`;
+const ProjectsContent = styled.div``;
 
 const SectionTitle = styled.h2`
   font-size: clamp(26px, 5vw, 40px);
-  color: #ccd6f6;
+  color: ${({ theme }) => theme.colors.heading};
   margin-bottom: 2rem;
   text-align: center;
 `;
@@ -23,13 +22,15 @@ const ProjectsGrid = styled.div`
 
 export default function Projects() {
   return (
-    <ProjectsContainer>
-      <SectionTitle>My Work</SectionTitle>
-      <ProjectsGrid>
-        {projects.map((project) => (
-          <ProjectCard key={project.title} project={project} />
-        ))}
-      </ProjectsGrid>
-    </ProjectsContainer>
+    <SectionContainer>
+      <ProjectsContent>
+        <SectionTitle>My Work</SectionTitle>
+        <ProjectsGrid>
+          {projects.map((project) => (
+            <ProjectCard key={project.title} project={project} />
+          ))}
+        </ProjectsGrid>
+      </ProjectsContent>
+    </SectionContainer>
   );
 }

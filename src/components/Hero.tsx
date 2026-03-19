@@ -13,29 +13,29 @@ const HeroContainer = styled.section`
 const Name = styled.h1`
   font-size: clamp(40px, 8vw, 80px);
   font-weight: 600;
-  color: #ccd6f6;
+  color: ${({ theme }) => theme.colors.heading};
   margin: 0;
 `;
 
 const Title = styled.h2`
   font-size: clamp(30px, 7vw, 70px);
   font-weight: 600;
-  color: #8892b0;
+  color: ${({ theme }) => theme.colors.text};
   margin: 0;
   line-height: 0.9;
 `;
 
 const Bio = styled.p`
   font-size: 1.125rem;
-  color: #8892b0;
+  color: ${({ theme }) => theme.colors.text};
   max-width: 600px;
   margin-top: 25px;
 `;
 
 const CtaButton = styled.button`
   background-color: transparent;
-  border: 1px solid #64ffda;
-  color: #64ffda;
+  border: 1px solid ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primary};
   font-size: 1rem;
   padding: 1rem 1.75rem;
   margin-top: 50px;
@@ -44,7 +44,7 @@ const CtaButton = styled.button`
   transition: background-color 0.3s ease;
 
   &:hover {
-    background-color: rgba(100, 255, 218, 0.1);
+    background-color: ${({ theme }) => theme.colors.primary}1A;
   }
 `;
 

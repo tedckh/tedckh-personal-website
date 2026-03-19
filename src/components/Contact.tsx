@@ -2,21 +2,22 @@
 
 import { useCallback, useState } from "react";
 import styled from "styled-components";
+import SectionContainer from "./SectionContainer";
 
-const ContactContainer = styled.section`
-  margin: 100px auto;
+const ContactContent = styled.div`
   text-align: center;
   max-width: 600px;
+  margin: 0 auto;
 `;
 
 const SectionTitle = styled.h2`
   font-size: clamp(26px, 5vw, 40px);
-  color: #ccd6f6;
+  color: ${({ theme }) => theme.colors.heading};
   margin-bottom: 1rem;
 `;
 
 const ContactText = styled.p`
-  color: #8892b0;
+  color: ${({ theme }) => theme.colors.text};
   font-size: 1.125rem;
   margin-bottom: 2rem;
 `;
@@ -24,8 +25,8 @@ const ContactText = styled.p`
 const EmailButton = styled.a`
   display: inline-block;
   background-color: transparent;
-  border: 1px solid #64ffda;
-  color: #64ffda;
+  border: 1px solid ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primary};
   font-size: 1rem;
   padding: 1rem 1.75rem;
   border-radius: 4px;
@@ -35,7 +36,7 @@ const EmailButton = styled.a`
   margin-top: 2rem;
 
   &:hover {
-    background-color: rgba(100, 255, 218, 0.1);
+    background-color: ${({ theme }) => theme.colors.primary}1A;
   }
 `;
 
@@ -45,14 +46,14 @@ const EmailDisplay = styled.div`
   align-items: center;
   gap: 1rem;
   margin-top: 1.5rem;
-  color: #8892b0;
+  color: ${({ theme }) => theme.colors.text};
   font-family: "SF Mono", "Fira Code", "Fira Mono", "Roboto Mono", monospace;
 `;
 
 const CopyButton = styled.button`
   background: none;
   border: none;
-  color: #64ffda;
+  color: ${({ theme }) => theme.colors.primary};
   cursor: pointer;
   font-size: 0.875rem;
   padding: 0.5rem;
@@ -72,17 +73,16 @@ export default function Contact() {
   }, []);
 
   return (
-    <ContactContainer>
-      <SectionTitle>Get In Touch</SectionTitle>
-      <ContactText>{contactText}</ContactText>
-
-      <EmailDisplay>
-        {email}
-        <CopyButton onClick={handleCopy}>{copyStatus}</CopyButton>
-      </EmailDisplay>
-
-      {/* //TODO: use mailto */}
-      {/* <EmailButton href={`mailto:${email}`}>Say Hello</EmailButton> */}
-    </ContactContainer>
+    <SectionContainer>
+      <ContactContent>
+        <SectionTitle>Get In Touch</SectionTitle>
+        <ContactText>{contactText}</ContactText>
+        <EmailDisplay>
+          {email}
+          <CopyButton onClick={handleCopy}>{copyStatus}</CopyButton>
+        </EmailDisplay>
+        {/* <EmailButton href={`mailto:${email}`}>Say Hello</EmailButton> */}
+      </ContactContent>
+    </SectionContainer>
   );
 }

@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { Project } from "@/data/projects";
 
 const Card = styled(motion.div)`
-  background-color: #112240;
+  background-color: ${({ theme }) => theme.colors.cardBackground};
   padding: 2rem;
   border-radius: 8px;
   display: flex;
@@ -16,12 +16,12 @@ const Card = styled(motion.div)`
 
 const ProjectTitle = styled.h3`
   font-size: 1.5rem;
-  color: #ccd6f6;
+  color: ${({ theme }) => theme.colors.heading};
   margin-bottom: 1rem;
 `;
 
 const ProjectDescription = styled.p`
-  color: #8892b0;
+  color: ${({ theme }) => theme.colors.text};
   font-size: 1rem;
   flex-grow: 1;
 `;
@@ -39,7 +39,7 @@ const TechListItem = styled.li`
   font-family: "SF Mono", "Fira Code", "Fira Mono", "Roboto Mono", monospace;
   font-size: 0.875rem;
   color: #64ffda;
-  background-color: rgba(100, 255, 218, 0.1);
+  background-color: ${({ theme }) => theme.colors.primary}1A;
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
 `;

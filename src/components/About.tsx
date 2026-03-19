@@ -1,14 +1,13 @@
 "use client";
 
 import styled from "styled-components";
+import SectionContainer from "./SectionContainer";
 
-const AboutContainer = styled.section`
-  margin: 100px 0;
-`;
+const AboutContent = styled.div``;
 
 const SectionTitle = styled.h2`
   font-size: clamp(26px, 5vw, 40px);
-  color: #ccd6f6;
+  color: ${({ theme }) => theme.colors.heading};
   margin-bottom: 2rem;
   text-align: center;
 `;
@@ -24,7 +23,7 @@ const AboutGrid = styled.div`
 `;
 
 const BioText = styled.div`
-  color: #8892b0;
+  color: ${({ theme }) => theme.colors.text};
   font-size: 1.125rem;
 
   p {
@@ -40,7 +39,7 @@ const PhotoContainer = styled.div`
 const PhotoPlaceholder = styled.div`
   width: 100%;
   padding-top: 100%;
-  background-color: #112240;
+  background-color: ${({ theme }) => theme.colors.cardBackground};
   border-radius: 8px;
 `;
 
@@ -53,18 +52,20 @@ const bioTexts = [
 
 export default function About() {
   return (
-    <AboutContainer>
-      <SectionTitle>About Me</SectionTitle>
-      <AboutGrid>
-        <BioText>
-          {bioTexts.map((text, index) => (
-            <p key={`bio-${index}`}>{text}</p>
-          ))}
-        </BioText>
-        <PhotoContainer>
-          <PhotoPlaceholder />
-        </PhotoContainer>
-      </AboutGrid>
-    </AboutContainer>
+    <SectionContainer>
+      <AboutContent>
+        <SectionTitle>About Me</SectionTitle>
+        <AboutGrid>
+          <BioText>
+            {bioTexts.map((text, index) => (
+              <p key={`bio-${index}`}>{text}</p>
+            ))}
+          </BioText>
+          <PhotoContainer>
+            <PhotoPlaceholder />
+          </PhotoContainer>
+        </AboutGrid>
+      </AboutContent>
+    </SectionContainer>
   );
 }

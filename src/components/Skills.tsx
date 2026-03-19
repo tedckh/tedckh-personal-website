@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import styled from "styled-components";
+import SectionContainer from "./SectionContainer";
 
 const categorizedSkills = {
   Frontend: [
@@ -34,20 +35,19 @@ const cardVariants = {
   },
 };
 
-const SkillsContainer = styled.section`
-  margin: 100px 0;
+const SkillsContent = styled.div`
   text-align: center;
 `;
 
 const SectionTitle = styled.h2`
   font-size: clamp(26px, 5vw, 40px);
-  color: #ccd6f6;
+  color: ${({ theme }) => theme.colors.heading};
   margin-bottom: 3rem;
 `;
 
 const CategoryTitle = styled.h3`
   font-size: 1.5rem;
-  color: #a8b2d1;
+  color: ${({ theme }) => theme.colors.heading};
   margin-top: 3rem;
   margin-bottom: 1.5rem;
   text-align: left;
@@ -69,38 +69,40 @@ const SkillCard = styled(motion.div)`
 const LogoPlaceholder = styled.div`
   width: 60px;
   height: 60px;
-  background-color: #112240;
+  background-color: ${({ theme }) => theme.colors.cardBackground};
   border-radius: 8px;
 `;
 
 const SkillName = styled.p`
-  color: #8892b0;
+  color: ${({ theme }) => theme.colors.text};
   font-size: 1rem;
   margin: 0;
 `;
 
 export default function Skills() {
   return (
-    <SkillsContainer>
-      <SectionTitle>My Tech Stack</SectionTitle>
-      {Object.entries(categorizedSkills).map(([category, skills]) => (
-        <div key={category}>
-          <CategoryTitle>{category}</CategoryTitle>
-          <SkillsGrid
-            variants={gridVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.1 }}
-          >
-            {skills.map((skill) => (
-              <SkillCard key={skill} variants={cardVariants}>
-                <LogoPlaceholder />
-                <SkillName>{skill}</SkillName>
-              </SkillCard>
-            ))}
-          </SkillsGrid>
-        </div>
-      ))}
-    </SkillsContainer>
+    <SectionContainer>
+      <SkillsContent>
+        <SectionTitle>My Tech Stack</SectionTitle>
+        {Object.entries(categorizedSkills).map(([category, skills]) => (
+          <div key={category}>
+            <CategoryTitle>{category}</CategoryTitle>
+            <SkillsGrid
+              variants={gridVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.1 }}
+            >
+              {skills.map((skill) => (
+                <SkillCard key={skill} variants={cardVariants}>
+                  <LogoPlaceholder />
+                  <SkillName>{skill}</SkillName>
+                </SkillCard>
+              ))}
+            </SkillsGrid>
+          </div>
+        ))}
+      </SkillsContent>
+    </SectionContainer>
   );
 }

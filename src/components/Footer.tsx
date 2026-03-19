@@ -14,7 +14,7 @@ const FooterContainer = styled.footer`
   justify-content: center;
   padding: 2rem;
   text-align: center;
-  color: #8892b0;
+  color: ${({ theme }) => theme.colors.text};
 `;
 
 const SocialLinks = styled.div`
@@ -24,7 +24,7 @@ const SocialLinks = styled.div`
 `;
 
 const SocialLink = styled.a`
-  color: #8892b0;
+  color: ${({ theme }) => theme.colors.text};
   transition: color 0.3s ease;
 
   svg {
@@ -33,7 +33,7 @@ const SocialLink = styled.a`
   }
 
   &:hover {
-    color: #64ffda;
+    color: ${({ theme }) => theme.colors.primary};
   }
 `;
 
