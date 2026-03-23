@@ -6,6 +6,9 @@ export type Theme = {
     primary: string;
     cardBackground: string;
   };
+  svg: {
+    fill: string;
+  };
 };
 
 export const lightTheme: Theme = {
@@ -16,6 +19,9 @@ export const lightTheme: Theme = {
     primary: "#007bff",
     cardBackground: "#ffffff",
   },
+  svg: {
+    fill: "#111111",
+  },
 };
 
 export const darkTheme: Theme = {
@@ -25,5 +31,8 @@ export const darkTheme: Theme = {
     heading: "#ccd6f6",
     primary: "#64ffda",
     cardBackground: "#112240",
+  },
+  svg: {
+    fill: "#ffffff",
   },
 };

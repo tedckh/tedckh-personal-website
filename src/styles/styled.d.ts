@@ -9,5 +9,8 @@ declare module "styled-components" {
       primary: string;
       cardBackground: string;
     };
+    svg: {
+      fill: string;
+    };
   }
 }

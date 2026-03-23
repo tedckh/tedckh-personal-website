@@ -4,7 +4,7 @@ import { useTheme } from "@/context/ThemeContext";
 import styled from "styled-components";
 import { motion, AnimatePresence } from "framer-motion";
 
-const IconWrapper = styled.button`
+const IconWrapper = styled(motion.button)`
   background: none;
   border: none;
   cursor: pointer;
@@ -13,7 +13,6 @@ const IconWrapper = styled.button`
   justify-content: center;
   align-items: center;
   color: ${({ theme }) => theme.colors.text};
-
   &:focus {
     outline: none;
   }
@@ -72,7 +71,12 @@ export default function ThemeToggler() {
   const { themeMode, toggleTheme } = useTheme();
 
   return (
-    <IconWrapper onClick={toggleTheme} aria-label="Toggle theme">
+    <IconWrapper
+      onClick={toggleTheme}
+      aria-label="Toggle theme"
+      whileHover={{ scale: 1.2 }}
+      whileTap={{ scale: 0.9 }}
+    >
       <AnimatePresence mode="wait" initial={false}>
         <motion.div
           key={themeMode}

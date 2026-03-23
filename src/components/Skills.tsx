@@ -3,19 +3,59 @@
 import { motion } from "framer-motion";
 import styled from "styled-components";
 import SectionContainer from "./SectionContainer";
+import { TechIcon } from "./icons/TechIcons";
 
 const categorizedSkills = {
   Frontend: [
-    "JavaScript",
-    "TypeScript",
-    "React",
-    "Next.js",
-    "Styled Components",
-    "Framer Motion",
-    "TanStack Query",
+    { name: "JavaScript", iconKey: "javascript" },
+    { name: "TypeScript", iconKey: "typescript" },
+    { name: "React", iconKey: "react" },
+    { name: "React Native", iconKey: "react-native" },
+    { name: "Next.js", iconKey: "nextjs" },
+    { name: "Styled Components", iconKey: "styled-component" },
+    { name: "Framer Motion", iconKey: "framer-motion" },
+    { name: "Zustand", iconKey: "zustand" },
+    { name: "Mobx", iconKey: "mobx" },
+    { name: "Mobx State Tree", iconKey: "mobx-state-tree" },
+    { name: "Redux", iconKey: "redux" },
+    { name: "Redux Thunk", iconKey: "redux-thunk" },
+    { name: "jQuery", iconKey: "jquery" },
+    { name: "TanStack Query", iconKey: "tanstack-query" },
+    { name: "SignalR", iconKey: "signal-r" },
+    { name: "CesiumJs", iconKey: "cesium-js" },
+    { name: "Flv.js", iconKey: "flv" },
+    { name: "Verdaccio", iconKey: "verdaccio" },
+    { name: "Storybook", iconKey: "storybook" },
   ],
-  Backend: ["Node.js", "Python", "FastAPI", "PostgreSQL"],
-  "Cloud & DevOps": ["Docker", "AWS", "Vercel", "Git"],
+  Backend: [
+    { name: "Node.js", iconKey: "node-js" },
+    { name: "Express", iconKey: "express" },
+    { name: "Socket.io", iconKey: "socket-io" },
+    { name: "Jest", iconKey: "jest" },
+    { name: "Python", iconKey: "python" },
+    { name: "FastAPI", iconKey: "fast-api" },
+    { name: "MSSQL", iconKey: "mssql" },
+    { name: "PostgreSQL", iconKey: "postgresql" },
+    { name: "Knex", iconKey: "knex" },
+    { name: "Tensorflow", iconKey: "tensorflow" },
+    { name: ".NET Core", iconKey: "dot-net-core" },
+    { name: "Selenium", iconKey: "selenium" },
+    { name: "Puppeteer", iconKey: "puppeteer" },
+  ],
+  "Cloud & DevOps": [
+    { name: "Docker", iconKey: "docker" },
+    { name: "SharePoint", iconKey: "sharepoint" },
+    { name: "SPFx", iconKey: "spfx" },
+    { name: "Intune", iconKey: "intune" },
+    { name: "Vercel", iconKey: "vercel" },
+    { name: "Git", iconKey: "git" },
+    { name: "AWS", iconKey: "aws" },
+    { name: "CI/CD", iconKey: "ci-cd" },
+    { name: "Grafana", iconKey: "grafana" },
+    { name: "Superset", iconKey: "superset" },
+    { name: "Metabase", iconKey: "metabase" },
+    { name: "K8s", iconKey: "k8s" },
+  ],
 };
 
 const gridVariants = {
@@ -66,13 +106,6 @@ const SkillCard = styled(motion.div)`
   gap: 1rem;
 `;
 
-const LogoPlaceholder = styled.div`
-  width: 60px;
-  height: 60px;
-  background-color: ${({ theme }) => theme.colors.cardBackground};
-  border-radius: 8px;
-`;
-
 const SkillName = styled.p`
   color: ${({ theme }) => theme.colors.text};
   font-size: 1rem;
@@ -94,9 +127,13 @@ export default function Skills() {
               viewport={{ once: true, amount: 0.1 }}
             >
               {skills.map((skill) => (
-                <SkillCard key={skill} variants={cardVariants}>
-                  <LogoPlaceholder />
-                  <SkillName>{skill}</SkillName>
+                <SkillCard
+                  key={skill.name}
+                  variants={cardVariants}
+                  whileHover={{ scale: 1.1, y: -5 }}
+                >
+                  <TechIcon iconKey={skill.iconKey} />
+                  <SkillName>{skill.name}</SkillName>
                 </SkillCard>
               ))}
             </SkillsGrid>

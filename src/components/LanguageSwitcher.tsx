@@ -1,10 +1,11 @@
 "use client";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
+import { AnimatePresence, motion } from "framer-motion";
 import { useLocale } from "next-intl";
 import styled from "styled-components";
 
-const SwitcherButton = styled.button`
+const SwitcherButton = styled(motion.button)`
   background: none;
   border: none;
   cursor: pointer;
@@ -21,6 +22,11 @@ const SwitcherButton = styled.button`
   }
 `;
 
+const textVariants = {
+  hidden: { opacity: 0, y: -10 },
+  visible: { opacity: 1, y: 0 },
+};
+
 export default function LanguageSwitcher() {
   const router = useRouter();
   const pathname = usePathname();
@@ -32,8 +38,24 @@ export default function LanguageSwitcher() {
   };
 
   return (
-    <SwitcherButton onClick={handleSwitch}>
-      {locale === "en" ? "中文" : "EN"}
+    <SwitcherButton
+      onClick={handleSwitch}
+      whileHover={{ scale: 1.1 }}
+      whileTap={{ scale: 0.9 }}
+    >
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.span
+          key={locale}
+          variants={textVariants}
+          initial="hidden"
+          animate="visible"
+          exit="hidden"
+          transition={{ duration: 0.2 }}
+          style={{ display: "inline-block" }}
+        >
+          {locale === "en" ? "中文" : "EN"}
+        </motion.span>
+      </AnimatePresence>
     </SwitcherButton>
   );
 }
