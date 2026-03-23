@@ -13,7 +13,10 @@
     "title": "My work"
   },
   "About": {
-    "title": "About me"
+    "title": "About me",
+    "bioText1": "Hello! I'm Ted, a developer based in Hong Kong. My journey into the world of programming started 5 years ago when I ...",
+    "bioText2": "Throughout my career, I've had the privilege of working on a variety of projects, from ...",
+    "bioText3": "When I'm not at the keyboard, I enjoy ..."
   },
   "Skills": {
     "title": "My tech stack"
@@ -21,6 +24,6 @@
   "Contact": {
     "title": "Get in touch",
     "text": "My inbox is always open. Whether you have a question, a proposal, or just want to say hi, I'll do my best to get back to you!",
-    "button": "Say Hello"
+    "email": "tedchiu94@gmail.com"
   }
 }

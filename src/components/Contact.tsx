@@ -1,8 +1,10 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import SectionContainer from "./SectionContainer";
+import { useTranslations } from "next-intl";
+import { AnimatePresence, motion } from "framer-motion";
 
 const ContactContent = styled.div`
   text-align: center;
@@ -22,24 +24,6 @@ const ContactText = styled.p`
   margin-bottom: 2rem;
 `;
 
-const EmailButton = styled.a`
-  display: inline-block;
-  background-color: transparent;
-  border: 1px solid ${({ theme }) => theme.colors.primary};
-  color: ${({ theme }) => theme.colors.primary};
-  font-size: 1rem;
-  padding: 1rem 1.75rem;
-  border-radius: 4px;
-  cursor: pointer;
-  text-decoration: none;
-  transition: background-color 0.3s ease;
-  margin-top: 2rem;
-
-  &:hover {
-    background-color: ${({ theme }) => theme.colors.primary}1A;
-  }
-`;
-
 const EmailDisplay = styled.div`
   display: flex;
   justify-content: center;
@@ -57,31 +41,68 @@ const CopyButton = styled.button`
   cursor: pointer;
   font-size: 0.875rem;
   padding: 0.5rem;
+  min-width: 70px;
+  text-align: center;
+  overflow: hidden;
+  position: relative;
 `;
 
-const contactText =
-  "My inbox is always open. Whether you have a question, a proposal, or just want to say hi, I'll do my best to get back to you!";
+const textVariants = {
+  initial: { y: "100%", opacity: 0 },
+  animate: { y: 0, opacity: 1 },
+  exit: { y: "-100%", opacity: 0 },
+};
 
 export default function Contact() {
+  const t = useTranslations("Contact");
   const email = "tedchiu94@gmail.com";
   const [copyStatus, setCopyStatus] = useState("Copy");
+  const timeoutIdRef = useRef<NodeJS.Timeout>(null);
 
   const handleCopy = useCallback(async () => {
+    if (timeoutIdRef.current) {
+      clearTimeout(timeoutIdRef.current);
+    }
+
     await navigator.clipboard.writeText(email);
     setCopyStatus("Copied!");
-    setTimeout(() => setCopyStatus("Copy"), 2000);
+
+    timeoutIdRef.current = setTimeout(() => {
+      setCopyStatus("Copy");
+    }, 2000);
+  }, [email]);
+
+  useEffect(() => {
+    return () => {
+      if (timeoutIdRef.current) {
+        clearTimeout(timeoutIdRef.current);
+      }
+    };
   }, []);
 
   return (
     <SectionContainer>
       <ContactContent>
         <SectionTitle>Get In Touch</SectionTitle>
-        <ContactText>{contactText}</ContactText>
+        <ContactText>{t("text")}</ContactText>
         <EmailDisplay>
-          {email}
-          <CopyButton onClick={handleCopy}>{copyStatus}</CopyButton>
+          {t("email")}
+          <CopyButton onClick={handleCopy}>
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.span
+                key={copyStatus}
+                variants={textVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={{ duration: 0.2, ease: "easeInOut" }}
+                style={{ display: "inline-block" }}
+              >
+                {copyStatus}
+              </motion.span>
+            </AnimatePresence>
+          </CopyButton>
         </EmailDisplay>
-        {/* <EmailButton href={`mailto:${email}`}>Say Hello</EmailButton> */}
       </ContactContent>
     </SectionContainer>
   );
