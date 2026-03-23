@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import Projects from "@/components/Projects";
 import Skills from "@/components/Skills";
+import TBDSection from "@/components/TBDSection";
 import { setRequestLocale } from "next-intl/server";
 import { use } from "react";
 import styled from "styled-components";
@@ -27,8 +28,10 @@ export default function IndexPage({ params }: Props) {
       <Header />
       <MainContent>
         <Hero />
-        <Projects />
-        <About />
+        <TBDSection title="My Work" />
+        {/* <Projects /> */}
+        <TBDSection title="About Me" />
+        {/* <About /> */}
         <Skills />
         <Contact />
       </MainContent>
