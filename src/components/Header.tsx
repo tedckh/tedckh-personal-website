@@ -2,6 +2,7 @@
 
 import styled from "styled-components";
 import ThemeToggler from "./ThemeToggler";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 const StyledHeader = styled.header`
   position: sticky;
@@ -29,12 +30,21 @@ const Logo = styled.a`
   text-decoration: none;
 `;
 
+const ControlsWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+`;
+
 export default function Header() {
   return (
     <StyledHeader>
       <Nav>
         <Logo href="/">TC</Logo>
-        <ThemeToggler />
+        <ControlsWrapper>
+          <LanguageSwitcher />
+          <ThemeToggler />
+        </ControlsWrapper>
       </Nav>
     </StyledHeader>
   );
