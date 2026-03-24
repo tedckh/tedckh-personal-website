@@ -25,13 +25,16 @@ const Card = styled(motion.div)`
   overflow: hidden;
 `;
 
+const CardHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+`;
+
 const CardLinks = styled.div`
-  position: absolute;
-  top: 1rem;
-  right: 1.5rem;
   display: flex;
   gap: 1rem;
-  z-index: 2;
 
   a {
     color: ${({ theme }) => theme.colors.text};
@@ -49,7 +52,7 @@ const CardLinks = styled.div`
 const ImageContainer = styled.div`
   position: relative;
   width: 100%;
-  padding-top: 56.25%;
+  padding-top: 56.25%; // 16:9
 `;
 
 const ContentWrapper = styled.div`
@@ -62,7 +65,7 @@ const ContentWrapper = styled.div`
 const ProjectTitle = styled.h3`
   font-size: 1.5rem;
   color: ${({ theme }) => theme.colors.heading};
-  margin-bottom: 1rem;
+  margin: 0;
 `;
 
 const ProjectDescription = styled.p`
@@ -83,10 +86,10 @@ const TechList = styled.ul`
 const TechListItem = styled.li`
   font-family: "SF Mono", "Fira Code", "Fira Mono", "Roboto Mono", monospace;
   font-size: 0.875rem;
-  color: #64ffda;
-  background-color: ${({ theme }) => theme.colors.primary}1A;
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
+  color: ${({ theme }) => theme.tag.text};
+  background-color: ${({ theme }) => theme.tag.background};
 `;
 
 const cardVariants = {
@@ -104,35 +107,37 @@ export default function ProjectCard({
 }: ProjectCardProps) {
   return (
     <Card initial="initial" whileHover="hover" variants={cardVariants}>
-      <CardLinks>
-        {repoUrl && (
-          <a
-            href={repoUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="GitHub Link"
-          >
-            <IconGitHub />
-          </a>
-        )}
-        {liveUrl && (
-          <a
-            href={liveUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Live Site Link"
-          >
-            <IconExternal />
-          </a>
-        )}
-      </CardLinks>
       {imageUrl && (
         <ImageContainer>
           <SafeImage src={imageUrl} alt={title} />
         </ImageContainer>
       )}
       <ContentWrapper>
-        <ProjectTitle>{title}</ProjectTitle>
+        <CardHeader>
+          <ProjectTitle>{title}</ProjectTitle>
+          <CardLinks>
+            {repoUrl && (
+              <a
+                href={repoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="GitHub Link"
+              >
+                <IconGitHub />
+              </a>
+            )}
+            {liveUrl && (
+              <a
+                href={liveUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Live Site Link"
+              >
+                <IconExternal />
+              </a>
+            )}
+          </CardLinks>
+        </CardHeader>
         <ProjectDescription>{description}</ProjectDescription>
         <TechList>
           {technologies.map((tech) => (

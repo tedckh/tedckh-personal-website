@@ -33,22 +33,6 @@ const Bio = styled.p`
   margin-top: 25px;
 `;
 
-const CtaButton = styled.button`
-  background-color: transparent;
-  border: 1px solid ${({ theme }) => theme.colors.primary};
-  color: ${({ theme }) => theme.colors.primary};
-  font-size: 1rem;
-  padding: 1rem 1.75rem;
-  margin-top: 50px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-
-  &:hover {
-    background-color: ${({ theme }) => theme.colors.primary}1A;
-  }
-`;
-
 export default function Hero() {
   const t = useTranslations("Hero");
   return (
@@ -56,7 +40,6 @@ export default function Hero() {
       <Name>{t("name")}</Name>
       <Title>{t("title")}</Title>
       <Bio>{t("bio")}</Bio>
-      <CtaButton>{t("button")}</CtaButton>
     </HeroContainer>
   );
 }

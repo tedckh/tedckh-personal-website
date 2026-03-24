@@ -9,6 +9,10 @@ export type Theme = {
   svg: {
     fill: string;
   };
+  tag: {
+    text: string;
+    background: string;
+  };
 };
 
 export const lightTheme: Theme = {
@@ -22,6 +26,10 @@ export const lightTheme: Theme = {
   svg: {
     fill: "#111111",
   },
+  tag: {
+    text: "#004085",
+    background: "#cce5ff",
+  },
 };
 
 export const darkTheme: Theme = {
@@ -34,5 +42,9 @@ export const darkTheme: Theme = {
   },
   svg: {
     fill: "#ffffff",
+  },
+  tag: {
+    text: "#64ffda",
+    background: "#64ffda1A",
   },
 };

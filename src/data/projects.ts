@@ -7,7 +7,9 @@ export const projectsData: {
 }[] = [
   {
     id: "iot-watch-platform",
-    imageUrl: "/images/iot-platform.png",
+    imageUrl: "",
+    liveUrl: "",
+    repoUrl: "",
     technologies: [
       "Next.js",
       "Node.js",
@@ -31,6 +33,9 @@ export const projectsData: {
   },
   {
     id: "smart-zone",
+    imageUrl: "",
+    liveUrl: "",
+    repoUrl: "",
     technologies: [
       "Next.js",
       "MUI",
@@ -47,7 +52,9 @@ export const projectsData: {
   },
   {
     id: "hypath-website",
+    imageUrl: "",
     liveUrl: "https://www.cmp.eycchuuyqj.com/home",
+    repoUrl: "",
     technologies: [
       "Next.js",
       "i18n",
@@ -59,6 +66,9 @@ export const projectsData: {
   },
   {
     id: "centralized-management-platform",
+    imageUrl: "",
+    liveUrl: "",
+    repoUrl: "",
     technologies: [
       "Next.js",
       "MobX",
@@ -78,19 +88,30 @@ export const projectsData: {
   },
   {
     id: "weather-metric-service",
+    imageUrl: "",
+    liveUrl: "",
+    repoUrl: "",
     technologies: [".NET Core", "Selenium", "NCache", "Microservice"],
   },
   {
     id: "aai-js-registry",
-    technologies: ["Lerna", "Verdaccio", "Storybook", "Monorepo", "CI/CD"],
+    imageUrl: "",
     liveUrl: "",
+    repoUrl: "",
+    technologies: ["Lerna", "Verdaccio", "Storybook", "Monorepo", "CI/CD"],
   },
   {
     id: "aai-app-delivery-hub",
+    imageUrl: "",
+    liveUrl: "",
+    repoUrl: "",
     technologies: ["Next.js", "Docker", "CI/CD"],
   },
   {
     id: "staff-app-admin-portal",
+    imageUrl: "",
+    liveUrl: "",
+    repoUrl: "",
     technologies: [
       "Next.js",
       "Material-UI (MUI)",
@@ -103,10 +124,16 @@ export const projectsData: {
   },
   {
     id: "pronunciation-poc",
+    imageUrl: "",
+    liveUrl: "",
+    repoUrl: "",
     technologies: ["Next.js", "Azure AI Speech", "MediaRecorder API"],
   },
   {
     id: "am-corner-sharepoint",
+    imageUrl: "",
+    liveUrl: "",
+    repoUrl: "",
     technologies: [
       "SharePoint (SPFx)",
       "React",
@@ -118,6 +145,9 @@ export const projectsData: {
   },
   {
     id: "emaa-mobile-sdk",
+    imageUrl: "",
+    liveUrl: "",
+    repoUrl: "",
     technologies: [
       "React Native",
       "SDK",
@@ -134,10 +164,16 @@ export const projectsData: {
   },
   {
     id: "ocd-client-mobile-app",
+    imageUrl: "",
+    liveUrl: "",
+    repoUrl: "",
     technologies: ["React Native", "EMAA SDK", "Azure AD", "QR Code Scanner"],
   },
   {
     id: "ocd-client-web-kendo",
+    imageUrl: "",
+    liveUrl: "",
+    repoUrl: "",
     technologies: [
       "React",
       "Kendo UI",
@@ -148,6 +184,9 @@ export const projectsData: {
   },
   {
     id: "job-portal-recommender",
+    imageUrl: "",
+    liveUrl: "",
+    repoUrl: "",
     technologies: [
       "Node.js",
       "Python",
@@ -162,6 +201,9 @@ export const projectsData: {
   },
   {
     id: "q-and-a-platform",
+    imageUrl: "",
+    liveUrl: "",
+    repoUrl: "",
     technologies: [
       "React",
       "Redux",

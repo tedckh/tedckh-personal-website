@@ -12,5 +12,9 @@ declare module "styled-components" {
     svg: {
       fill: string;
     };
+    tag: {
+      text: string;
+      background: string;
+    };
   }
 }
