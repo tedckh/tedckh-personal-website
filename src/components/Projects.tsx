@@ -1,7 +1,7 @@
 "use client";
 
 import styled from "styled-components";
-import { projects } from "@/data/projects";
+import { projectsData } from "@/data/projects";
 import ProjectCard from "./ProjectCard";
 import SectionContainer from "./SectionContainer";
 import { useTranslations } from "next-intl";
@@ -28,8 +28,16 @@ export default function Projects() {
       <ProjectsContent>
         <SectionTitle>{t("title")}</SectionTitle>
         <ProjectsGrid>
-          {projects.map((project) => (
-            <ProjectCard key={project.title} project={project} />
+          {projectsData.map((project) => (
+            <ProjectCard
+              key={project.id}
+              title={t(`${project.id}.title`)}
+              description={t(`${project.id}.description`)}
+              technologies={project.technologies}
+              repoUrl={project?.repoUrl}
+              liveUrl={project?.liveUrl}
+              imageUrl={project?.imageUrl}
+            />
           ))}
         </ProjectsGrid>
       </ProjectsContent>

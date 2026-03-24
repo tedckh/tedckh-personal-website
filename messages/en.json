@@ -10,7 +10,67 @@
     "button": "View My Work"
   },
   "Projects": {
-    "title": "My work"
+    "title": "My work",
+    "iot-watch-platform": {
+      "title": "Real-Time Iot Smart Watch Platform",
+      "description": "Engineered a scalable IoT platform on AWS to ingest and process real-time data from smart watches. Built to support the Smart Site Safety System (SSSS) framework, the architecture handles both TCP and MQTT protocols via event-driven pipelines and includes a unified REST API for remote device control."
+    },
+    "smart-zone": {
+      "title": "Smart Zone - Real-Time SSSS Dashboard",
+      "description": "Developed a real-time monitoring web application for Smart Site Safety System (SSSS) projects. The dashboard features complex charts and data visualizations using ECharts, receives live data via SignalR, and includes a complete alert lifecycle management system."
+    },
+    "hypath-website": {
+      "title": "Official Corporate Website (Hypath)",
+      "description": "Developed the official corporate website, featuring company information, product showcases, and contact details. Built with a modern stack including Next.js, i18n, and framer-motion, the site is fully responsive and optimized for all device sizes."
+    },
+    "centralized-management-platform": {
+      "title": "Centralized Management Platform (CMP)",
+      "description": "The primary frontend platform for the company's SSSS solution. This comprehensive dashboard monitors and manages a wide array of IoT devices, including gate sensors, smart watches, and confined space monitors. It also features a digital e-permit form system, real-time alert handling, and 3D BIM model visualization."
+    },
+    "weather-metric-service": {
+      "title": "Weather Metric Hub",
+      "description": "A .NET Core microservice that provides weather data for the SSSS platform. It periodically scrapes weather metrics and warnings from the Hong Kong Observatory using Selenium and caches the results with NCache for high performance."
+    },
+    "aai-js-registry": {
+      "title": "AAI Javascript Registry & Component Library",
+      "description": "Architected and managed a private npm registry using Verdaccio to host custom JavaScript packages for internal applications. Utilized a Lerna monorepo to develop shared UI components, with Storybook for documentation and as a development playground."
+    },
+    "aai-app-delivery-hub": {
+      "title": "AAI App Delivery Hub",
+      "description": "Built a web platform for internal teams to manage and track the deployment of private company applications. The system was containerized with Docker and integrated into a CI/CD pipeline to automate the delivery process."
+    },
+    "staff-app-admin-portal": {
+      "title": "Staff App Admin Portal",
+      "description": "Developed a secure admin portal for managing a corporate staff application. Built with Next.js and Material-UI (MUI), it provides administrators with tools for user management and application control, with authentication handled by Azure AD (MSAL)."
+    },
+    "pronunciation-poc": {
+      "title": "AI English Pronunciation Coach (POC)",
+      "description": "Developed a Proof of Concept web app that uses the browser's MediaRecorder API to capture user audio and integrates with Azure AI Speech services to provide real-time feedback on pronunciation accuracy."
+    },
+    "am-corner-sharepoint": {
+      "title": "AM Corner (SharePoint Online Customization)",
+      "description": "Developed custom web parts and extensions for a SharePoint Online environment using the SharePoint Framework (SPFx) and React. The project featured a responsive UI, Azure AD integration for access control, and data import/export functionality with Excel and PDF files."
+    },
+    "emaa-mobile-sdk": {
+      "title": "EMAA Mobile Application SDK & Toolkit",
+      "description": "Architected and developed a comprehensive toolkit of custom React Native packages to standardize and accelerate mobile app development. The SDK included modules for: a camera with quality control, an i18n framework, native bridges for Intune MAM and MSAL (Azure AD) authentication, and helpers for push notifications and SharePoint Online access."
+    },
+    "ocd-client-mobile-app": {
+      "title": "OCD-Client Mobile App",
+      "description": "A React Native mobile application built using the custom EMAA SDK. The app features secure authentication via Azure AD, dynamic form creation and submission, and an integrated QR code scanner for data capture."
+    },
+    "ocd-client-web-kendo": {
+      "title": "OCD-Client Web App (Kendo UI)",
+      "description": "A progressive web application built with React and Kendo UI, consuming packages from the custom EMAA SDK. The app features complex form handling and was designed with an offline-first approach using Service Workers."
+    },
+    "job-portal-recommender": {
+      "title": "Job Portal with Recommender System",
+      "description": "A full-stack job portal that scrapes postings from various sites using Puppeteer. Developed a content-based recommender system with Python (NLTK, scikit-learn) and built a responsive frontend with data visualizations using Chart.js. Deployed on AWS with a GitLab CI/CD pipeline."
+    },
+    "q-and-a-platform": {
+      "title": "Q&A Discussion Platform",
+      "description": "A full-stack Q&A platform where users can post questions and replies with Markdown formatting. The frontend was built with React and Redux, while the Node.js backend handles data, uploads (Multer), and user interactions like scoring and bookmarking. Deployed on AWS using EC2, S3, and CloudFront."
+    }
   },
   "About": {
     "title": "About me",
@@ -25,5 +85,8 @@
     "title": "Get in touch",
     "text": "My inbox is always open. Whether you have a question, a proposal, or just want to say hi, I'll do my best to get back to you!",
     "email": "tedchiu94@gmail.com"
+  },
+  "TBD": {
+    "message": "Content coming soon. This section is a work in progress."
   }
 }

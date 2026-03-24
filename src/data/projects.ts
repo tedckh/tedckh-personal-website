@@ -1,25 +1,177 @@
-export type Project = {
-  title: string;
-  description: string;
+export const projectsData: {
+  id: string;
   technologies: string[];
+  imageUrl?: string;
   liveUrl?: string;
   repoUrl?: string;
-};
-
-export const projects: Project[] = [
+}[] = [
   {
-    title: "Project One",
-    description: "This is demo",
-    technologies: [],
+    id: "iot-watch-platform",
+    imageUrl: "/images/iot-platform.png",
+    technologies: [
+      "Next.js",
+      "Node.js",
+      "PostgreSQL",
+      "AWS IoT Core",
+      "AWS Lambda",
+      "SQS",
+      "EC2",
+      "Nginx",
+      "Docker",
+      "API Gateway",
+      "VPC",
+      "Flutter",
+      "Tauri",
+      "Express",
+      "Axios",
+      "pg",
+      "node-pg-migrate",
+      "winston/pino",
+    ],
   },
   {
-    title: "Project Two",
-    description: "This is demo",
-    technologies: [],
+    id: "smart-zone",
+    technologies: [
+      "Next.js",
+      "MUI",
+      "Styled-Components",
+      "ECharts",
+      "SignalR",
+      "react-toastify",
+      "React Hook Form",
+      "Web Push",
+      "Axios",
+      "TanStack Query",
+      "CI/CD",
+    ],
   },
   {
-    title: "Project Three",
-    description: "This is demo",
-    technologies: [],
+    id: "hypath-website",
+    liveUrl: "https://www.cmp.eycchuuyqj.com/home",
+    technologies: [
+      "Next.js",
+      "i18n",
+      "framer-motion",
+      "style-components",
+      "TanStack Query",
+      "CI/CD",
+    ],
+  },
+  {
+    id: "centralized-management-platform",
+    technologies: [
+      "Next.js",
+      "MobX",
+      "TanStack Query",
+      "CesiumJS",
+      "Leaflet",
+      "Material-UI (MUI)",
+      "Ant Design",
+      "SignalR",
+      "ECharts",
+      "Plotly.js",
+      "Azure AD (MSAL)",
+      "IPCamLive",
+      "Flv.js",
+      "CI/CD",
+    ],
+  },
+  {
+    id: "weather-metric-service",
+    technologies: [".NET Core", "Selenium", "NCache", "Microservice"],
+  },
+  {
+    id: "aai-js-registry",
+    technologies: ["Lerna", "Verdaccio", "Storybook", "Monorepo", "CI/CD"],
+    liveUrl: "",
+  },
+  {
+    id: "aai-app-delivery-hub",
+    technologies: ["Next.js", "Docker", "CI/CD"],
+  },
+  {
+    id: "staff-app-admin-portal",
+    technologies: [
+      "Next.js",
+      "Material-UI (MUI)",
+      "Azure AD (MSAL)",
+      "Zustand",
+      "TanStack Query",
+      "Docker",
+      "CI/CD",
+    ],
+  },
+  {
+    id: "pronunciation-poc",
+    technologies: ["Next.js", "Azure AI Speech", "MediaRecorder API"],
+  },
+  {
+    id: "am-corner-sharepoint",
+    technologies: [
+      "SharePoint (SPFx)",
+      "React",
+      "PnPjs",
+      "Azure AD",
+      "jsPDF",
+      "SheetJS (xlsx)",
+    ],
+  },
+  {
+    id: "emaa-mobile-sdk",
+    technologies: [
+      "React Native",
+      "SDK",
+      "TanStack Query",
+      "MobX-State-Tree",
+      "CodePush",
+      "React Native VisionCamera",
+      "React Native Biometrics",
+      "React Native Keychain",
+      "Intune MAM",
+      "Azure AD",
+      "Microsoft Graph",
+    ],
+  },
+  {
+    id: "ocd-client-mobile-app",
+    technologies: ["React Native", "EMAA SDK", "Azure AD", "QR Code Scanner"],
+  },
+  {
+    id: "ocd-client-web-kendo",
+    technologies: [
+      "React",
+      "Kendo UI",
+      "EMAA SDK",
+      "Service Workers",
+      "Offline-First",
+    ],
+  },
+  {
+    id: "job-portal-recommender",
+    technologies: [
+      "Node.js",
+      "Python",
+      "PostgreSQL",
+      "Puppeteer",
+      "scikit-learn",
+      "AWS",
+      "GitLab CI/CD",
+      "Bootstrap",
+      "Chart.js",
+    ],
+  },
+  {
+    id: "q-and-a-platform",
+    technologies: [
+      "React",
+      "Redux",
+      "Node.js",
+      "PostgreSQL",
+      "SCSS",
+      "AWS",
+      "S3",
+      "CloudFront",
+      "GitLab CI/CD",
+    ],
   },
 ];

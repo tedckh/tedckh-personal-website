@@ -2,16 +2,61 @@
 
 import styled from "styled-components";
 import { motion } from "framer-motion";
-import { Project } from "@/data/projects";
+import SafeImage from "./SafeImage";
+import { IconGitHub } from "./icons/IconGitHub";
+import { IconExternal } from "./icons/IconExternal";
+
+type ProjectCardProps = {
+  title: string;
+  description: string;
+  technologies: string[];
+  imageUrl?: string;
+  liveUrl?: string;
+  repoUrl?: string;
+};
 
 const Card = styled(motion.div)`
   background-color: ${({ theme }) => theme.colors.cardBackground};
-  padding: 2rem;
   border-radius: 8px;
   display: flex;
   flex-direction: column;
   height: 100%;
   box-shadow: 0 10px 30px -15px rgba(2, 12, 27, 0.7);
+  overflow: hidden;
+`;
+
+const CardLinks = styled.div`
+  position: absolute;
+  top: 1rem;
+  right: 1.5rem;
+  display: flex;
+  gap: 1rem;
+  z-index: 2;
+
+  a {
+    color: ${({ theme }) => theme.colors.text};
+    transition: color 0.3s ease;
+    &:hover {
+      color: ${({ theme }) => theme.colors.primary};
+    }
+    svg {
+      width: 22px;
+      height: 22px;
+    }
+  }
+`;
+
+const ImageContainer = styled.div`
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%;
+`;
+
+const ContentWrapper = styled.div`
+  padding: 1.5rem 2rem 2rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
 `;
 
 const ProjectTitle = styled.h3`
@@ -49,20 +94,52 @@ const cardVariants = {
   hover: { y: -5, transition: { duration: 0.2 } },
 };
 
-type ProjectCardProps = {
-  project: Project;
-};
-
-export default function ProjectCard({ project }: ProjectCardProps) {
+export default function ProjectCard({
+  title,
+  description,
+  technologies,
+  imageUrl,
+  repoUrl,
+  liveUrl,
+}: ProjectCardProps) {
   return (
     <Card initial="initial" whileHover="hover" variants={cardVariants}>
-      <ProjectTitle>{project.title}</ProjectTitle>
-      <ProjectDescription>{project.description}</ProjectDescription>
-      <TechList>
-        {project.technologies.map((tech) => (
-          <TechListItem key={tech}>{tech}</TechListItem>
-        ))}
-      </TechList>
+      <CardLinks>
+        {repoUrl && (
+          <a
+            href={repoUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="GitHub Link"
+          >
+            <IconGitHub />
+          </a>
+        )}
+        {liveUrl && (
+          <a
+            href={liveUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Live Site Link"
+          >
+            <IconExternal />
+          </a>
+        )}
+      </CardLinks>
+      {imageUrl && (
+        <ImageContainer>
+          <SafeImage src={imageUrl} alt={title} />
+        </ImageContainer>
+      )}
+      <ContentWrapper>
+        <ProjectTitle>{title}</ProjectTitle>
+        <ProjectDescription>{description}</ProjectDescription>
+        <TechList>
+          {technologies.map((tech) => (
+            <TechListItem key={tech}>{tech}</TechListItem>
+          ))}
+        </TechList>
+      </ContentWrapper>
     </Card>
   );
 }

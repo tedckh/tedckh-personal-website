@@ -1,0 +1,92 @@
+{
+  "Metadata": {
+    "title": "趙家豪 (Ted) | 高級分析程式員",
+    "description": "趙家豪的個人作品集，一個充滿熱情的開發者。"
+  },
+  "Hero": {
+    "name": "趙家豪 (Ted)",
+    "title": "高級分析程式員",
+    "bio": "一個擁有五年經驗、充滿熱情的開發者，致力於打造可擴展的後端系統和直觀的前端體驗。",
+    "button": "查看我的作品"
+  },
+  "Projects": {
+    "title": "我的作品",
+    "iot-watch-platform": {
+      "title": "實時物聯網智能手錶平台",
+      "description": "在AWS上設計並開發了一個可擴展的物聯網平台，用於接收和處理來自智能手錶的實時數據。此架構為支援智慧工地安全系統(SSSS)而設，能通過事件驅動管道處理TCP和MQTT協議，並包含一個用於遠程設備控制的統一REST API。"
+    },
+    "smart-zone": {
+      "title": "Smart Zone - 實時智慧工地監控儀表板",
+      "description": "為智慧工地安全系統(SSSS)項目開發了一個實時監控儀表板。該應用程式使用ECharts展示複雜的圖表和數據可視化，通過SignalR接收實時數據，並包含一個完整的警報生命週期管理系統。"
+    },
+    "hypath-website": {
+      "title": "Hypath 公司官方網站",
+      "description": "開發公司官方網站，提供公司資訊、產品展示和聯絡方式。此網站使用現代化技術棧（包括Next.js, i18n, 和framer-motion）構建，完全響應式設計並為所有設備尺寸進行了優化。"
+    },
+    "centralized-management-platform": {
+      "title": "中央管理平台 (CMP)",
+      "description": "公司核心的SSSS解決方案前端平台。此綜合儀表板監控及管理各類物聯網設備，包括閘機傳感器、智能手錶和密閉空間監測器。平台亦包含一個電子許可證表格系統、實時警報處理及3D BIM模型可視化功能。"
+    },
+    "weather-metric-service": {
+      "title": "天氣指標中心 (Weather Metric Hub)",
+      "description": "一個為SSSS平台提供天氣數據的.NET Core微服務。它使用Selenium定期從香港天文台(HKO)抓取天氣指標和警告，並使用NCache緩存結果以確保高效能。"
+    },
+    "aai-js-registry": {
+      "title": "AAI Javascript 套件註冊庫與組件庫",
+      "description": "架構並管理一個使用Verdaccio的私有npm註冊庫，用於託管內部應用的自定義JavaScript套件。利用Lerna Monorepo開發共享的UI組件，並使用Storybook創建文檔和開發遊樂場(Playground)。"
+    },
+    "aai-app-delivery-hub": {
+      "title": "AAI 應用程式交付中心",
+      "description": "建立了一個網絡平台，供內部團隊管理和追踪公司私有應用的部署情況。該系統使用Docker進行容器化，並整合到CI/CD流程中以實現自動化交付。"
+    },
+    "staff-app-admin-portal": {
+      "title": "員工應用程式管理後台",
+      "description": "為管理公司員工應用程式而開發的一個安全的網絡後台。此平台使用Next.js和Material-UI(MUI)構建，為管理員提供用戶管理和應用程式控制的工具，並通過Azure AD (MSAL)處理身份驗證。"
+    },
+    "pronunciation-poc": {
+      "title": "AI 英語發音教練 (概念驗證)",
+      "description": "開發了一個概念驗證(POC)的網絡應用程式，它使用瀏覽器的MediaRecorder API來錄製用戶音頻，並與Azure AI語音服務整合，為英語發音的準確性提供實時反饋。"
+    },
+    "am-corner-sharepoint": {
+      "title": "AM Corner (SharePoint Online 客製化)",
+      "description": "使用SharePoint框架(SPFx)和React為SharePoint Online環境開發自定義的Web Part和擴充功能。該專案包含客製化的響應式用戶界面、用於存取控制的Azure AD整合，以及與Excel和PDF文件進行數據導入/導出的功能。"
+    },
+    "emaa-mobile-sdk": {
+      "title": "EMAA 移動應用程式開發套件(SDK)",
+      "description": "負責架構與開發一套全面的自定義React Native套件(SDK)，旨在標準化並加速移動應用的開發。此開發套件包含多個模組，如：具備品質控制的相機組件、i18n框架、用於Intune MAM和MSAL身份驗證的原生橋接、以及處理推送通知和訪問SharePoint Online的輔助工具。"
+    },
+    "ocd-client-mobile-app": {
+      "title": "OCD-Client 移動應用程式",
+      "description": "一個使用自定義EMAA開發套件(SDK)構建的React Native移動應用程式。該應用程式具有通過Azure AD進行的安全身份驗證、動態表單創建與提交，以及用於數據捕獲的集成QR Code掃描器功能。"
+    },
+    "ocd-client-web-kendo": {
+      "title": "OCD-Client 網頁應用程式 (Kendo UI)",
+      "description": "一個使用React和Kendo UI構建的漸進式網絡應用(PWA)，並取用自定義EMAA開發套件中的套件。此應用程式具有複雜的表單處理功能，並採用離線優先(Offline-First)的方法，通過Service Worker實現離線數據存取。"
+    },
+    "job-portal-recommender": {
+      "title": "職位門戶網站與推薦系統",
+      "description": "一個全棧的職位門戶網站，使用Puppeteer從多個網站抓取招聘信息。利用Python (NLTK, scikit-learn) 開發了內容為本的推薦系統，並使用Chart.js建立了帶有數據可視化功能的響應式前端。整個應用程式通過GitLab CI/CD管道部署在AWS上。"
+    },
+    "q-and-a-platform": {
+      "title": "問答討論平台",
+      "description": "一個全棧的問答平台，用戶可以發布帶有Markdown格式的問題和回覆。前端使用React和Redux構建，而Node.js後端處理數據、上傳(Multer)以及評分和書籤等用戶互動。系統部署在AWS上，使用EC2、S3和CloudFront。"
+    }
+  },
+  "About": {
+    "title": "關於我",
+    "bioText1": "你好！我是Ted，一位常駐香港的開發者。我的程式設計之旅始於五年前，當時我...",
+    "bioText2": "在我的職業生涯中，我有幸參與了各種專案，從...",
+    "bioText3": "當我不在鍵盤前時，我喜歡..."
+  },
+  "Skills": {
+    "title": "我的技術棧"
+  },
+  "Contact": {
+    "title": "保持聯繫",
+    "text": "我的收件箱隨時開放。無論您有疑問、有合作提案，或只是想打個招呼，我都會盡力回覆！",
+    "email": "tedchiu94@gmail.com"
+  },
+  "TBD": {
+    "message": "內容即將推出。此部分正在建設中。"
+  }
+}

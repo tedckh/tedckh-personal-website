@@ -2,6 +2,7 @@
 
 import styled from "styled-components";
 import SectionContainer from "./SectionContainer";
+import { useTranslations } from "next-intl";
 
 const TBDWrapper = styled.div`
   background-color: transparent;
@@ -22,14 +23,19 @@ const Message = styled.p`
   font-size: 1.125rem;
 `;
 
-export default function TBDSection({ title }: { title: string }) {
+export default function TBDSection({
+  titleNamespace,
+}: {
+  titleNamespace: string;
+}) {
+  const tTitle = useTranslations(titleNamespace);
+  const tTBD = useTranslations("TBD");
+
   return (
     <SectionContainer>
       <TBDWrapper>
-        <SectionTitle>{title}</SectionTitle>
-        <Message>
-          Content coming soon. This section is a work in progress.
-        </Message>
+        <SectionTitle>{tTitle("title")}</SectionTitle>
+        <Message>{tTBD("message")}</Message>
       </TBDWrapper>
     </SectionContainer>
   );

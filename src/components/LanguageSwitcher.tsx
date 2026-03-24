@@ -33,7 +33,7 @@ export default function LanguageSwitcher() {
   const locale = useLocale();
 
   const handleSwitch = () => {
-    const nextLocale = locale === "en" ? "zh" : "en";
+    const nextLocale = locale === "en" ? "zh-HK" : "en";
     router.replace(pathname, { locale: nextLocale });
   };
 

@@ -1,7 +1,47 @@
 "use client";
 
 import styled, { useTheme } from "styled-components";
-import React, { Suspense } from "react";
+import { IconReact } from "./IconReact";
+import { IconNextjs } from "./IconNextjs";
+import { IconJavaScript } from "./IconJavaScript";
+import { IconTypeScript } from "./IconTypeScript";
+import { IconStyledComponent } from "./IconStyledComponent";
+import { IconFramerMotion } from "./IconFramerMotion";
+import { IconTanStackQuery } from "./IconTanStackQuery";
+import { IconNodeJS } from "./IconNodeJS";
+import { IconPython } from "./IconPython";
+import { IconFastAPI } from "./IconFastAPI";
+import { IconPostgreSQL } from "./IconPostgreSQL";
+import { IconDocker } from "./IconDocker";
+import { IconAWS } from "./IconAWS";
+import { IconVercel } from "./IconVercel";
+import { IconGit } from "./IconGit";
+import { IconMobx } from "./IconMobx";
+import { IconMobxStateTree } from "./IconMobxStateTree";
+import { IconZustand } from "./IconZustand";
+import { IconRedux } from "./IconRedux";
+import { IconJQuery } from "./IconJQuery";
+import { IconSignalR } from "./IconSignalR";
+import { IconCesiumJS } from "./IconCesiumJS";
+import { IconFLV } from "./IconFLV";
+import { IconVerdaccio } from "./IconVerdaccio";
+import { IconStorybook } from "./IconStorybook";
+import { IconExpress } from "./IconExpress";
+import { IconSocketIO } from "./IconSocketIO";
+import { IconJest } from "./IconJest";
+import { IconMSSQL } from "./IconMSSQL";
+import { IconKnex } from "./IconKnex";
+import { IconTensorflow } from "./IconTensorflow";
+import { IconDotNetCore } from "./IconDotNetCore";
+import { IconSelenium } from "./IconSelenium";
+import { IconPuppeteer } from "./IconPuppeteer";
+import { IconSharePoint } from "./IconSharePoint";
+import { IconIntune } from "./IconIntune";
+import { IconCICD } from "./IconCICD";
+import { IconGrafana } from "./IconGrafana";
+import { IconSuperset } from "./IconSuperset";
+import { IconMetabase } from "./IconMetabase";
+import { IconK8s } from "./IconK8s";
 
 const Placeholder = styled.div`
   width: 60px;
@@ -10,237 +50,97 @@ const Placeholder = styled.div`
   border-radius: 8px;
 `;
 
-const LazyIcon = ({ iconKey }: { iconKey: string }) => {
+export const TechIcon = ({ iconKey }: { iconKey: string }) => {
   const theme = useTheme();
   const sharedProps = { width: 60, height: 60, fill: theme.svg.fill };
 
-  let Component;
   switch (iconKey.toLowerCase()) {
     case "javascript":
-      Component = React.lazy(() =>
-        import("./IconJavaScript").then((m) => ({ default: m.IconJavaScript })),
-      );
-      break;
+      return <IconJavaScript {...sharedProps} />;
     case "typescript":
-      Component = React.lazy(() =>
-        import("./IconTypeScript").then((m) => ({ default: m.IconTypeScript })),
-      );
-      break;
+      return <IconTypeScript {...sharedProps} />;
     case "react":
     case "react-native":
-      Component = React.lazy(() =>
-        import("./IconReact").then((m) => ({ default: m.IconReact })),
-      );
-      break;
+      return <IconReact {...sharedProps} />;
     case "nextjs":
-      Component = React.lazy(() =>
-        import("./IconNextjs").then((m) => ({ default: m.IconNextjs })),
-      );
-      break;
+      return <IconNextjs {...sharedProps} />;
     case "styled-component":
-      Component = React.lazy(() =>
-        import("./IconStyledComponent").then((m) => ({
-          default: m.IconStyledComponent,
-        })),
-      );
-      break;
+      return <IconStyledComponent {...sharedProps} />;
     case "framer-motion":
-      Component = React.lazy(() =>
-        import("./IconFramerMotion").then((m) => ({
-          default: m.IconFramerMotion,
-        })),
-      );
-      break;
+      return <IconFramerMotion {...sharedProps} />;
     case "zustand":
-      Component = React.lazy(() =>
-        import("./IconZustand").then((m) => ({ default: m.IconZustand })),
-      );
-      break;
+      return <IconZustand {...sharedProps} />;
     case "mobx":
-      Component = React.lazy(() =>
-        import("./IconMobx").then((m) => ({ default: m.IconMobx })),
-      );
-      break;
+      return <IconMobx {...sharedProps} />;
     case "mobx-state-tree":
-      Component = React.lazy(() =>
-        import("./IconMobxStateTree").then((m) => ({
-          default: m.IconMobxStateTree,
-        })),
-      );
-      break;
+      return <IconMobxStateTree {...sharedProps} />;
     case "redux":
     case "redux-thunk":
-      Component = React.lazy(() =>
-        import("./IconRedux").then((m) => ({ default: m.IconRedux })),
-      );
-      break;
+      return <IconRedux {...sharedProps} />;
     case "jquery":
-      Component = React.lazy(() =>
-        import("./IconJQuery").then((m) => ({ default: m.IconJQuery })),
-      );
-      break;
+      return <IconJQuery {...sharedProps} />;
     case "tanstack-query":
-      Component = React.lazy(() =>
-        import("./IconTanStackQuery").then((m) => ({
-          default: m.IconTanStackQuery,
-        })),
-      );
-      break;
+      return <IconTanStackQuery {...sharedProps} />;
     case "signal-r":
-      Component = React.lazy(() =>
-        import("./IconSignalR").then((m) => ({ default: m.IconSignalR })),
-      );
-      break;
+      return <IconSignalR {...sharedProps} />;
     case "cesium-js":
-      Component = React.lazy(() =>
-        import("./IconCesiumJS").then((m) => ({ default: m.IconCesiumJS })),
-      );
-      break;
+      return <IconCesiumJS {...sharedProps} />;
     case "flv":
-      Component = React.lazy(() =>
-        import("./IconFLV").then((m) => ({ default: m.IconFLV })),
-      );
-      break;
+      return <IconFLV {...sharedProps} />;
     case "verdaccio":
-      Component = React.lazy(() =>
-        import("./IconVerdaccio").then((m) => ({ default: m.IconVerdaccio })),
-      );
-      break;
+      return <IconVerdaccio {...sharedProps} />;
     case "storybook":
-      Component = React.lazy(() =>
-        import("./IconStorybook").then((m) => ({ default: m.IconStorybook })),
-      );
-      break;
+      return <IconStorybook {...sharedProps} />;
     case "node-js":
-      Component = React.lazy(() =>
-        import("./IconNodeJS").then((m) => ({ default: m.IconNodeJS })),
-      );
-      break;
+      return <IconNodeJS {...sharedProps} />;
     case "express":
-      Component = React.lazy(() =>
-        import("./IconExpress").then((m) => ({ default: m.IconExpress })),
-      );
-      break;
+      return <IconExpress {...sharedProps} />;
     case "socket-io":
-      Component = React.lazy(() =>
-        import("./IconSocketIO").then((m) => ({ default: m.IconSocketIO })),
-      );
-      break;
+      return <IconSocketIO {...sharedProps} />;
     case "jest":
-      Component = React.lazy(() =>
-        import("./IconJest").then((m) => ({ default: m.IconJest })),
-      );
-      break;
+      return <IconJest {...sharedProps} />;
     case "python":
-      Component = React.lazy(() =>
-        import("./IconPython").then((m) => ({ default: m.IconPython })),
-      );
-      break;
+      return <IconPython {...sharedProps} />;
     case "fast-api":
-      Component = React.lazy(() =>
-        import("./IconFastAPI").then((m) => ({ default: m.IconFastAPI })),
-      );
-      break;
+      return <IconFastAPI {...sharedProps} />;
     case "mssql":
-      Component = React.lazy(() =>
-        import("./IconMSSQL").then((m) => ({ default: m.IconMSSQL })),
-      );
-      break;
+      return <IconMSSQL {...sharedProps} />;
     case "postgresql":
-      Component = React.lazy(() =>
-        import("./IconPostgreSQL").then((m) => ({ default: m.IconPostgreSQL })),
-      );
-      break;
+      return <IconPostgreSQL {...sharedProps} />;
     case "knex":
-      Component = React.lazy(() =>
-        import("./IconKnex").then((m) => ({ default: m.IconKnex })),
-      );
-      break;
+      return <IconKnex {...sharedProps} />;
     case "tensorflow":
-      Component = React.lazy(() =>
-        import("./IconTensorflow").then((m) => ({ default: m.IconTensorflow })),
-      );
-      break;
+      return <IconTensorflow {...sharedProps} />;
     case "dot-net-core":
-      Component = React.lazy(() =>
-        import("./IconDotNetCore").then((m) => ({ default: m.IconDotNetCore })),
-      );
-      break;
+      return <IconDotNetCore {...sharedProps} />;
     case "selenium":
-      Component = React.lazy(() =>
-        import("./IconSelenium").then((m) => ({ default: m.IconSelenium })),
-      );
-      break;
+      return <IconSelenium {...sharedProps} />;
     case "puppeteer":
-      Component = React.lazy(() =>
-        import("./IconPuppeteer").then((m) => ({ default: m.IconPuppeteer })),
-      );
-      break;
+      return <IconPuppeteer {...sharedProps} />;
     case "docker":
-      Component = React.lazy(() =>
-        import("./IconDocker").then((m) => ({ default: m.IconDocker })),
-      );
-      break;
+      return <IconDocker {...sharedProps} />;
     case "sharepoint":
     case "spfx":
-      Component = React.lazy(() =>
-        import("./IconSharePoint").then((m) => ({ default: m.IconSharePoint })),
-      );
-      break;
+      return <IconSharePoint {...sharedProps} />;
     case "intune":
-      Component = React.lazy(() =>
-        import("./IconIntune").then((m) => ({ default: m.IconIntune })),
-      );
-      break;
+      return <IconIntune {...sharedProps} />;
     case "vercel":
-      Component = React.lazy(() =>
-        import("./IconVercel").then((m) => ({ default: m.IconVercel })),
-      );
-      break;
+      return <IconVercel {...sharedProps} />;
     case "git":
-      Component = React.lazy(() =>
-        import("./IconGit").then((m) => ({ default: m.IconGit })),
-      );
-      break;
+      return <IconGit {...sharedProps} />;
     case "aws":
-      Component = React.lazy(() =>
-        import("./IconAWS").then((m) => ({ default: m.IconAWS })),
-      );
-      break;
+      return <IconAWS {...sharedProps} />;
     case "ci-cd":
-      Component = React.lazy(() =>
-        import("./IconCICD").then((m) => ({ default: m.IconCICD })),
-      );
-      break;
+      return <IconCICD {...sharedProps} />;
     case "grafana":
-      Component = React.lazy(() =>
-        import("./IconGrafana").then((m) => ({ default: m.IconGrafana })),
-      );
-      break;
+      return <IconGrafana {...sharedProps} />;
     case "superset":
-      Component = React.lazy(() =>
-        import("./IconSuperset").then((m) => ({ default: m.IconSuperset })),
-      );
-      break;
+      return <IconSuperset {...sharedProps} />;
     case "metabase":
-      Component = React.lazy(() =>
-        import("./IconMetabase").then((m) => ({ default: m.IconMetabase })),
-      );
-      break;
+      return <IconMetabase {...sharedProps} />;
     case "k8s":
-      Component = React.lazy(() =>
-        import("./IconK8s").then((m) => ({ default: m.IconK8s })),
-      );
-      break;
+      return <IconK8s {...sharedProps} />;
     default:
       return <Placeholder />;
   }
-
-  return <Component {...sharedProps} />;
 };
-
-export const TechIcon = (props: { iconKey: string }) => (
-  <Suspense fallback={<Placeholder />}>
-    <LazyIcon {...props} />
-  </Suspense>
-);

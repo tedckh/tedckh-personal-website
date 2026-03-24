@@ -28,9 +28,8 @@ export default function IndexPage({ params }: Props) {
       <Header />
       <MainContent>
         <Hero />
-        <TBDSection title="My Work" />
-        {/* <Projects /> */}
-        <TBDSection title="About Me" />
+        <Projects />
+        <TBDSection titleNamespace="About" />
         {/* <About /> */}
         <Skills />
         <Contact />

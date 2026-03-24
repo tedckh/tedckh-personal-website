@@ -1,3 +1,16 @@
 {
-  "cSpell.words": ["CICD", "Intune", "metabase", "postgre", "spfx"]
+  "cSpell.words": [
+    "CICD",
+    "emaa",
+    "hypath",
+    "Intune",
+    "metabase",
+    "MSAL",
+    "NLTK",
+    "Plotly",
+    "postgre",
+    "scikit",
+    "spfx",
+    "Tauri"
+  ]
 }
