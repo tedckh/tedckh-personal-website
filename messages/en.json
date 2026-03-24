@@ -10,7 +10,7 @@
     "button": "View My Work"
   },
   "Projects": {
-    "title": "My work",
+    "title": "My Work",
     "iot-watch-platform": {
       "title": "Real-Time Iot Smart Watch Platform",
       "description": "Engineered a scalable IoT platform on AWS to ingest and process real-time data from smart watches. Built to support the Smart Site Safety System (SSSS) framework, the architecture handles both TCP and MQTT protocols via event-driven pipelines and includes a unified REST API for remote device control."
