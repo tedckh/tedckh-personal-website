@@ -5,17 +5,7 @@ import { motion, Variants } from "framer-motion";
 import SafeImage from "./SafeImage";
 import { IconGitHub } from "./icons/IconGitHub";
 import { IconExternal } from "./icons/IconExternal";
-
-type ProjectCardProps = {
-  variants?: Variants;
-  index: number;
-  title: string;
-  description: string;
-  technologies: string[];
-  imageUrl?: string;
-  liveUrl?: string;
-  repoUrl?: string;
-};
+import { useModalActions } from "@/context/ModalContext";
 
 const ProjectIndex = styled.span`
   position: absolute;
@@ -38,6 +28,7 @@ const Card = styled(motion.div)`
   height: 100%;
   box-shadow: 0 10px 30px -15px rgba(2, 12, 27, 0.7);
   overflow: hidden;
+  cursor: pointer;
   &:hover ${ProjectIndex} {
     opacity: 1;
   }
@@ -111,29 +102,49 @@ const TechListItem = styled.li`
   background-color: ${({ theme }) => theme.tag.background};
 `;
 
+type ProjectCardProps = {
+  variants?: Variants;
+  index: number;
+  title: string;
+  description: string;
+  technologies: string[];
+  imageUrls?: string[];
+  liveUrl?: string;
+  repoUrl?: string;
+};
+
 export default function ProjectCard({
   variants,
   index,
   title,
   description,
   technologies,
-  imageUrl,
+  imageUrls,
   repoUrl,
   liveUrl,
 }: ProjectCardProps) {
+  const { openModal } = useModalActions();
+
+  const handleImageClick = () => {
+    if (imageUrls && imageUrls.length > 0) {
+      openModal(imageUrls);
+    }
+  };
+
   return (
     <Card
       variants={variants}
       whileHover={{ y: -5, transition: { duration: 0.2 } }}
+      onClick={handleImageClick}
     >
       <ProjectIndex>{index.toString().padStart(2, "0")}</ProjectIndex>
-      {imageUrl && (
-        <div style={{ padding: "20px" }}>
-          <ImageContainer>
-            <SafeImage src={imageUrl} alt={title} />
-          </ImageContainer>
-        </div>
+
+      {imageUrls && imageUrls.length > 0 && (
+        <ImageContainer>
+          <SafeImage src={imageUrls[0]} alt={title} />
+        </ImageContainer>
       )}
+
       <ContentWrapper>
         <CardHeader>
           <ProjectTitle>{title}</ProjectTitle>

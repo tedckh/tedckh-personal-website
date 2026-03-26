@@ -3,7 +3,6 @@
 import styled from "styled-components";
 import ThemeToggler from "./ThemeToggler";
 import LanguageSwitcher from "./LanguageSwitcher";
-import { Link } from "@/i18n/navigation";
 import { motion } from "framer-motion";
 
 const StyledHeader = styled.header`
@@ -25,7 +24,7 @@ const Nav = styled.nav`
   padding: 0 2rem;
 `;
 
-const Logo = styled(Link)`
+const Logo = styled.a`
   font-size: 1.5rem;
   font-weight: bold;
   color: ${({ theme }) => theme.colors.primary};

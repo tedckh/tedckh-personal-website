@@ -106,7 +106,7 @@ export default function Projects() {
               technologies={project.technologies}
               repoUrl={project?.repoUrl}
               liveUrl={project?.liveUrl}
-              imageUrl={project?.imageUrl}
+              imageUrls={project?.imageUrls}
             />
           ))}
         </ProjectsGrid>

@@ -2,12 +2,13 @@ export const projectsData: {
   id: string;
   technologies: string[];
   imageUrl?: string;
+  imageUrls?: string[];
   liveUrl?: string;
   repoUrl?: string;
 }[] = [
   {
     id: "iot-watch-platform",
-    imageUrl: "/images/smart-watch-client.png",
+    imageUrls: ["/images/smart-watch-client.png"],
     liveUrl: "",
     repoUrl: "",
     technologies: [
@@ -33,7 +34,7 @@ export const projectsData: {
   },
   {
     id: "smart-zone",
-    imageUrl: "/images/smart-zone.png",
+    imageUrls: ["/images/smart-zone.png"],
     liveUrl: "",
     repoUrl: "",
     technologies: [
@@ -52,7 +53,7 @@ export const projectsData: {
   },
   {
     id: "hypath-website",
-    imageUrl: "/images/hypath.png",
+    imageUrls: ["/images/hypath.png"],
     liveUrl: "https://www.cmp.eycchuuyqj.com/home",
     repoUrl: "",
     technologies: [
@@ -66,7 +67,7 @@ export const projectsData: {
   },
   {
     id: "centralized-management-platform",
-    imageUrl: "/images/cmp.png",
+    imageUrls: ["/images/cmp.png"],
     liveUrl: "",
     repoUrl: "",
     technologies: [
@@ -88,14 +89,14 @@ export const projectsData: {
   },
   {
     id: "weather-metric-service",
-    imageUrl: "/images/weather-hub.png",
+    imageUrls: ["/images/weather-hub.png"],
     liveUrl: "",
     repoUrl: "",
     technologies: [".NET Core", "Selenium", "NCache", "Microservice"],
   },
   {
     id: "aai-js-registry",
-    imageUrl: "/images/verdaccio.png",
+    imageUrls: ["/images/verdaccio.png"],
     liveUrl: "",
     repoUrl: "",
     technologies: ["Lerna", "Verdaccio", "Storybook", "Monorepo", "CI/CD"],

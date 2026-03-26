@@ -1,11 +1,12 @@
 import { Inter } from "next/font/google";
 import StyledComponentsRegistry from "@/lib/registry";
 import { CustomThemeProvider } from "@/context/ThemeContext";
-import "./globals.css";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { routing } from "@/i18n/routing";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import ClientLayout from "@/components/ClientLayout";
+import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -28,7 +29,9 @@ export default async function LocaleLayout({ children, params }: Props) {
       <body className={inter.className}>
         <StyledComponentsRegistry>
           <CustomThemeProvider>
-            <NextIntlClientProvider>{children}</NextIntlClientProvider>
+            <NextIntlClientProvider>
+              <ClientLayout>{children}</ClientLayout>
+            </NextIntlClientProvider>
           </CustomThemeProvider>
         </StyledComponentsRegistry>
       </body>
