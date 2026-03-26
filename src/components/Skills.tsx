@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import styled from "styled-components";
 import SectionContainer from "./SectionContainer";
 import { TechIcon } from "./icons/TechIcons";
+import { useTranslations } from "next-intl";
 
 const categorizedSkills = {
   Frontend: [
@@ -113,10 +114,11 @@ const SkillName = styled.p`
 `;
 
 export default function Skills() {
+  const t = useTranslations("Skills");
   return (
     <SectionContainer>
       <SkillsContent>
-        <SectionTitle>My Tech Stack</SectionTitle>
+        <SectionTitle>{t("title")}</SectionTitle>
         {Object.entries(categorizedSkills).map(([category, skills]) => (
           <div key={category}>
             <CategoryTitle>{category}</CategoryTitle>

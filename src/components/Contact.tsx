@@ -83,7 +83,7 @@ export default function Contact() {
   return (
     <SectionContainer>
       <ContactContent>
-        <SectionTitle>Get In Touch</SectionTitle>
+        <SectionTitle>{t("title")}</SectionTitle>
         <ContactText>{t("text")}</ContactText>
         <EmailDisplay>
           {t("email")}
