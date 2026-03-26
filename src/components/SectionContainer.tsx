@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, Variant } from "framer-motion";
+import { motion } from "framer-motion";
 import styled from "styled-components";
 import { ReactNode } from "react";
 import { sectionVariants } from "@/utils/animations";
@@ -19,7 +19,7 @@ export default function SectionContainer({
       variants={sectionVariants}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, amount: 0.1 }}
+      viewport={{ once: true }}
     >
       {children}
     </StyledSection>

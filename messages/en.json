@@ -11,6 +11,8 @@
   },
   "Projects": {
     "title": "My Work",
+    "showLess": "Show Less",
+    "showMore": "Show More",
     "iot-watch-platform": {
       "title": "Real-Time Iot Smart Watch Platform",
       "description": "Engineered a scalable IoT platform on AWS to ingest and process real-time data from smart watches. Built to support the Smart Site Safety System (SSSS) framework, the architecture handles both TCP and MQTT protocols via event-driven pipelines and includes a unified REST API for remote device control."
@@ -73,10 +75,10 @@
     }
   },
   "About": {
-    "title": "About me",
-    "bioText1": "Hello! I'm Ted, a developer based in Hong Kong. My journey into the world of programming started 5 years ago when I ...",
-    "bioText2": "Throughout my career, I've had the privilege of working on a variety of projects, from ...",
-    "bioText3": "When I'm not at the keyboard, I enjoy ..."
+    "title": "About Me",
+    "bioText1": "Hello! I'm Ted, a developer based in Hong Kong. My journey into programming began 5 years ago during the COVID-19 lockdowns. With a passion for learning new skills in my free time, I discovered freeCodeCamp and was immediately drawn to the clarity and simplicity of web development.",
+    "bioText2": "Throughout my career, I've found that my greatest satisfaction comes not just from solving a complex problem, but from breaking it down into clear, manageable tasks for a team. I believe in the power of good communication and enjoy sharing what I've learned by making complex topics simple for others.",
+    "bioText3": "When I'm not at the keyboard, you can usually find me on the basketball court or enjoying the scenery on Hong Kong's hiking trails."
   },
   "Skills": {
     "title": "My tech stack"

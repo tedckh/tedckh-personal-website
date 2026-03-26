@@ -3,6 +3,8 @@
 import styled from "styled-components";
 import ThemeToggler from "./ThemeToggler";
 import LanguageSwitcher from "./LanguageSwitcher";
+import { Link } from "@/i18n/navigation";
+import { motion } from "framer-motion";
 
 const StyledHeader = styled.header`
   position: sticky;
@@ -23,7 +25,7 @@ const Nav = styled.nav`
   padding: 0 2rem;
 `;
 
-const Logo = styled.a`
+const Logo = styled(Link)`
   font-size: 1.5rem;
   font-weight: bold;
   color: ${({ theme }) => theme.colors.primary};
@@ -40,7 +42,14 @@ export default function Header() {
   return (
     <StyledHeader>
       <Nav>
-        <Logo href="/">TC</Logo>
+        <Logo href="/">
+          <motion.div
+            whileHover={{ rotate: 720 }}
+            transition={{ duration: 0.6, ease: "easeInOut" }}
+          >
+            TC
+          </motion.div>
+        </Logo>
         <ControlsWrapper>
           <LanguageSwitcher />
           <ThemeToggler />

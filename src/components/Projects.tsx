@@ -5,10 +5,31 @@ import { projectsData } from "@/data/projects";
 import ProjectCard from "./ProjectCard";
 import SectionContainer from "./SectionContainer";
 import { useTranslations } from "next-intl";
-import { motion } from "framer-motion";
-import { useState } from "react";
+import { motion, Variants } from "framer-motion";
+import { useRef, useState } from "react";
 
 const PROJECTS_TO_SHOW_INITIALLY = 6;
+
+const gridVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const cardVariants: Variants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      duration: 0.5,
+    },
+  },
+};
 
 const ProjectsContent = styled.div``;
 
@@ -19,9 +40,9 @@ const SectionTitle = styled.h2`
   text-align: center;
 `;
 
-const ProjectsGrid = styled.div`
+const ProjectsGrid = styled(motion.div)`
   display: grid;
-  grid-template-columns: repeat() (auto-fill, minmax() (300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 2rem;
 `;
 
@@ -46,19 +67,40 @@ const ShowMoreButton = styled(motion.button)`
 export default function Projects() {
   const t = useTranslations("Projects");
   const [showAll, setShowAll] = useState(false);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   const visibleProjects = showAll
     ? projectsData
     : projectsData.slice(0, PROJECTS_TO_SHOW_INITIALLY);
 
+  const handleToggleShowAll = () => {
+    if (showAll) {
+      setShowAll(false);
+      requestAnimationFrame(() => {
+        buttonRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+      });
+    } else {
+      setShowAll(true);
+    }
+  };
+
   return (
     <SectionContainer>
       <ProjectsContent>
         <SectionTitle>{t("title")}</SectionTitle>
-        <ProjectsGrid>
-          {visibleProjects.map((project) => (
+        <ProjectsGrid
+          variants={gridVariants}
+          initial="hidden"
+          animate={visibleProjects.length > 0 ? "visible" : "hidden"}
+        >
+          {visibleProjects.map((project, index) => (
             <ProjectCard
               key={project.id}
+              variants={cardVariants}
+              index={index + 1}
               title={t(`${project.id}.title`)}
               description={t(`${project.id}.description`)}
               technologies={project.technologies}
@@ -70,11 +112,12 @@ export default function Projects() {
         </ProjectsGrid>
         {projectsData.length > PROJECTS_TO_SHOW_INITIALLY && (
           <ShowMoreButton
-            onClick={() => setShowAll(!showAll)}
+            ref={buttonRef}
+            onClick={handleToggleShowAll}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            {showAll ? "Show Less" : "Show More"}
+            {showAll ? t("showLess") : t("showMore")}
           </ShowMoreButton>
         )}
       </ProjectsContent>

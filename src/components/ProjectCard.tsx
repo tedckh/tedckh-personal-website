@@ -1,12 +1,14 @@
 "use client";
 
 import styled from "styled-components";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import SafeImage from "./SafeImage";
 import { IconGitHub } from "./icons/IconGitHub";
 import { IconExternal } from "./icons/IconExternal";
 
 type ProjectCardProps = {
+  variants?: Variants;
+  index: number;
   title: string;
   description: string;
   technologies: string[];
@@ -15,7 +17,20 @@ type ProjectCardProps = {
   repoUrl?: string;
 };
 
+const ProjectIndex = styled.span`
+  position: absolute;
+  top: 1rem;
+  right: 1.5rem;
+  font-size: 6rem;
+  font-weight: 800;
+  color: ${({ theme }) => theme.colors.primary}15;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+`;
+
 const Card = styled(motion.div)`
+  position: relative;
   background-color: ${({ theme }) => theme.colors.cardBackground};
   border-radius: 8px;
   display: flex;
@@ -23,6 +38,9 @@ const Card = styled(motion.div)`
   height: 100%;
   box-shadow: 0 10px 30px -15px rgba(2, 12, 27, 0.7);
   overflow: hidden;
+  &:hover ${ProjectIndex} {
+    opacity: 1;
+  }
 `;
 
 const CardHeader = styled.div`
@@ -35,7 +53,6 @@ const CardHeader = styled.div`
 const CardLinks = styled.div`
   display: flex;
   gap: 1rem;
-
   a {
     color: ${({ theme }) => theme.colors.text};
     transition: color 0.3s ease;
@@ -60,6 +77,8 @@ const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  position: relative;
+  z-index: 2;
 `;
 
 const ProjectTitle = styled.h3`
@@ -92,12 +111,9 @@ const TechListItem = styled.li`
   background-color: ${({ theme }) => theme.tag.background};
 `;
 
-const cardVariants = {
-  initial: { y: 0 },
-  hover: { y: -5, transition: { duration: 0.2 } },
-};
-
 export default function ProjectCard({
+  variants,
+  index,
   title,
   description,
   technologies,
@@ -106,11 +122,17 @@ export default function ProjectCard({
   liveUrl,
 }: ProjectCardProps) {
   return (
-    <Card initial="initial" whileHover="hover" variants={cardVariants}>
+    <Card
+      variants={variants}
+      whileHover={{ y: -5, transition: { duration: 0.2 } }}
+    >
+      <ProjectIndex>{index.toString().padStart(2, "0")}</ProjectIndex>
       {imageUrl && (
-        <ImageContainer>
-          <SafeImage src={imageUrl} alt={title} />
-        </ImageContainer>
+        <div style={{ padding: "20px" }}>
+          <ImageContainer>
+            <SafeImage src={imageUrl} alt={title} />
+          </ImageContainer>
+        </div>
       )}
       <ContentWrapper>
         <CardHeader>
