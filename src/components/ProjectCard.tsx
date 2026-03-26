@@ -57,10 +57,16 @@ const CardLinks = styled.div`
   }
 `;
 
+const ImagePaddingWrapper = styled.div`
+  padding: 1.5rem 1.5rem 0;
+`;
+
 const ImageContainer = styled.div`
   position: relative;
   width: 100%;
   padding-top: 56.25%; // 16:9
+  border-radius: 4px;
+  overflow: hidden;
 `;
 
 const ContentWrapper = styled.div`
@@ -140,9 +146,11 @@ export default function ProjectCard({
       <ProjectIndex>{index.toString().padStart(2, "0")}</ProjectIndex>
 
       {imageUrls && imageUrls.length > 0 && (
-        <ImageContainer>
-          <SafeImage src={imageUrls[0]} alt={title} />
-        </ImageContainer>
+        <ImagePaddingWrapper>
+          <ImageContainer>
+            <SafeImage src={imageUrls[0]} alt={title} />
+          </ImageContainer>
+        </ImagePaddingWrapper>
       )}
 
       <ContentWrapper>
