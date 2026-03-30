@@ -5,6 +5,7 @@ import styled from "styled-components";
 import SectionContainer from "./SectionContainer";
 import { useTranslations } from "next-intl";
 import { AnimatePresence, motion } from "framer-motion";
+import { track } from "@vercel/analytics";
 
 const ContactContent = styled.div`
   text-align: center;
@@ -60,6 +61,7 @@ export default function Contact() {
   const timeoutIdRef = useRef<NodeJS.Timeout>(null);
 
   const handleCopy = useCallback(async () => {
+    track("copy_email", { email });
     if (timeoutIdRef.current) {
       clearTimeout(timeoutIdRef.current);
     }

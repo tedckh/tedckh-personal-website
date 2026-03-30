@@ -6,6 +6,7 @@ import { routing } from "@/i18n/routing";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import ClientLayout from "@/components/ClientLayout";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -31,6 +32,7 @@ export default async function LocaleLayout({ children, params }: Props) {
           <CustomThemeProvider>
             <NextIntlClientProvider>
               <ClientLayout>{children}</ClientLayout>
+              <Analytics />
             </NextIntlClientProvider>
           </CustomThemeProvider>
         </StyledComponentsRegistry>
