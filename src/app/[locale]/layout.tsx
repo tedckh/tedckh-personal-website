@@ -7,6 +7,7 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import ClientLayout from "@/components/ClientLayout";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -84,6 +85,7 @@ export default async function LocaleLayout({ children, params }: Props) {
             <NextIntlClientProvider>
               <ClientLayout>{children}</ClientLayout>
               <Analytics />
+              <SpeedInsights />
             </NextIntlClientProvider>
           </CustomThemeProvider>
         </StyledComponentsRegistry>
