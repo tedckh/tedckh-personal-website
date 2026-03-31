@@ -131,6 +131,18 @@ export default function ImageModal() {
     setPage([0, 0]);
   }, [images]);
 
+  useEffect(() => {
+    if (isOpen && images.length > 1) {
+      const nextIndex = (currentIndex + 1) % images.length;
+      const nextImg = new window.Image();
+      nextImg.src = images[nextIndex];
+
+      const prevIndex = (currentIndex - 1 + images.length) % images.length;
+      const prevImg = new window.Image();
+      prevImg.src = images[prevIndex];
+    }
+  }, [currentIndex, images, isOpen]);
+
   if (!isOpen) return null;
 
   return (
