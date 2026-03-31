@@ -6,6 +6,8 @@ import html from "remark-html";
 
 const postsDirectory = path.join(process.cwd(), "src", "posts");
 
+let cachedPosts: PostData[] | null = null;
+
 export type PostData = {
   id: string;
   title: string;
@@ -15,6 +17,10 @@ export type PostData = {
 };
 
 export function getSortedPostsData(): PostData[] {
+  if (cachedPosts) {
+    return cachedPosts;
+  }
+
   const fileNames = fs.readdirSync(postsDirectory);
   const allPostsData: PostData[] = fileNames.map((fileName) => {
     const id = fileName.replace(/\.md$/, "");
@@ -34,7 +40,10 @@ export function getSortedPostsData(): PostData[] {
     };
   });
 
-  return allPostsData.sort((a, b) => (a.date < b.date ? 1 : -1));
+  const sortedPosts = allPostsData.sort((a, b) => (a.date < b.date ? 1 : -1));
+
+  cachedPosts = sortedPosts;
+  return sortedPosts;
 }
 
 export async function getPostData(id: string): Promise<PostData> {
