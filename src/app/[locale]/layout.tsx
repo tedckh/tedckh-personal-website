@@ -9,6 +9,7 @@ import ClientLayout from "@/components/ClientLayout";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
+import { createMetadata } from "@/lib/metadata";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,44 +20,13 @@ export async function generateMetadata({
 }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "Metadata" });
-  const title = t("title");
-  const description = t("description");
-  const url = "https://tedckh.com";
 
-  return {
+  return createMetadata({
     title: t("title"),
     description: t("description"),
-    alternates: {
-      canonical: `${url}/${locale}`,
-      languages: {
-        en: `${url}/en`,
-        "zh-HK": `${url}/zh-HK`,
-      },
-    },
-    openGraph: {
-      title,
-      description,
-      url,
-      siteName: title,
-      //TODO: add a 1200x630px image to the `public` folder for social media previews
-      // images: [
-      //   {
-      //     url: `${url}/og-image.png`,
-      //     width: 1200,
-      //     height: 630,
-      //   }
-      // ],
-      locale,
-      type: "website",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-      //TODO: add a Twitter-specific image
-      images: [`${url}/twitter-image.png`],
-    },
-  };
+    locale,
+    pathname: "/",
+  });
 }
 
 export function generateStaticParams() {
@@ -78,7 +48,7 @@ export default async function LocaleLayout({ children, params }: Props) {
   setRequestLocale(locale);
 
   return (
-    <html lang="en">
+    <html lang={locale}>
       <body className={inter.className}>
         <StyledComponentsRegistry>
           <CustomThemeProvider>

@@ -3,6 +3,7 @@ import SectionContainer from "@/components/SectionContainer";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Metadata } from "next";
 import BlogList from "@/components/BlogList";
+import { createMetadata } from "@/lib/metadata";
 
 export async function generateMetadata({
   params,
@@ -11,32 +12,14 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "Blog" });
-  const url = "https://tedckh.com";
 
-  return {
+  return createMetadata({
     title: t("title"),
     description: t("description"),
-    alternates: {
-      canonical: `${url}/${locale}/blog`,
-      languages: {
-        en: `${url}/en/blog`,
-        "zh-HK": `${url}/zh-HK/blog`,
-      },
-    },
-    openGraph: {
-      title: t("title"),
-      description: t("description"),
-      url: `${url}/${locale}/blog`,
-      siteName: "Ted Chiu's Blog",
-      locale,
-      type: "website",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: t("title"),
-      description: t("description"),
-    },
-  };
+    locale,
+    pathname: "/blog",
+    ogType: "website",
+  });
 }
 
 export default async function BlogPage({

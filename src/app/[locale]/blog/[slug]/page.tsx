@@ -4,6 +4,7 @@ import SectionContainer from "@/components/SectionContainer";
 import { setRequestLocale } from "next-intl/server";
 import { Metadata } from "next";
 import BlogPost from "@/components/BlogPost";
+import { createMetadata } from "@/lib/metadata";
 
 export async function generateStaticParams() {
   const allPostsData = getSortedPostsData();
@@ -19,37 +20,19 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug, locale } = await params;
   const post = await getPostData(slug);
-  const url = "https://tedckh.com";
 
   if (!post) {
     return {};
   }
 
-  return {
+  return createMetadata({
     title: post.title,
     description: post.excerpt,
-    alternates: {
-      canonical: `${url}/${locale}/blog/${slug}`,
-      languages: {
-        en: `${url}/en/blog/${slug}`,
-        "zh-HK": `${url}/zh-HK/blog/${slug}`,
-      },
-    },
-    openGraph: {
-      title: post.title,
-      description: post.excerpt,
-      url: `${url}/${locale}/blog/${slug}`,
-      siteName: "Ted Chiu's Blog",
-      locale,
-      type: "article",
-      publishedTime: post.date,
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: post.title,
-      description: post.excerpt,
-    },
-  };
+    locale,
+    pathname: `/blog/${slug}`,
+    ogType: "article",
+    publishedTime: post.date,
+  });
 }
 
 export default async function BlogPostPage({
