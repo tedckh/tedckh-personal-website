@@ -11,6 +11,57 @@ import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "Metadata" });
+  const title = t("title");
+  const description = t("description");
+  const url = "https://tedckh.com";
+
+  return {
+    title: t("title"),
+    description: t("description"),
+    alternates: {
+      canonical: `${url}/${locale}`,
+      languages: {
+        en: `${url}/en`,
+        "zh-HK": `${url}/zh-HK`,
+      },
+    },
+    openGraph: {
+      title,
+      description,
+      url,
+      siteName: title,
+      //TODO: add a 1200x630px image to the `public` folder for social media previews
+      // images: [
+      //   {
+      //     url: `${url}/og-image.png`,
+      //     width: 1200,
+      //     height: 630,
+      //   }
+      // ],
+      locale,
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      //TODO: add a Twitter-specific image
+      images: [`${url}/twitter-image.png`],
+    },
+  };
+}
+
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
+
 type Props = {
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
@@ -39,16 +90,4 @@ export default async function LocaleLayout({ children, params }: Props) {
       </body>
     </html>
   );
-}
-
-export async function generateMetadata({ params }: Props) {
-  const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "Metadata" });
-  return {
-    title: t("title"),
-  };
-}
-
-export function generateStaticParams() {
-  return routing.locales.map((locale) => ({ locale }));
 }
