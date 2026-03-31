@@ -90,5 +90,9 @@
   },
   "TBD": {
     "message": "Content coming soon. This section is a work in progress."
+  },
+  "Blog": {
+    "title": "My Blog",
+    "description": "Insights, tutorials, and musings on software development and technology."
   }
 }
