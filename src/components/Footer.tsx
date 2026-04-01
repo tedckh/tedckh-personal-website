@@ -5,6 +5,8 @@ import styled from "styled-components";
 const ICONS = {
   GitHub:
     "M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6.1 0-1.3-.5-2.4-1.3-3.2.1-.3.5-1.5-.1-3.2 0 0-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.1 2.1 5 2.4 5 2.4c-.6 1.7-.2 2.9-.1 3.2-.8.8-1.3 1.9-1.3 3.2 0 4.6 2.7 5.7 5.5 6.1-.6.5-.9 1.4-.9 2.8v3.5",
+  Storybook:
+    "M18 2H6C4.9 2 4 2.9 4 4v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 16H7V6h10v12zm-3.5-6H9v-2h4.5v2z",
 };
 
 const FooterContainer = styled.footer`
@@ -72,8 +74,15 @@ export default function Footer() {
         >
           <Icon path={ICONS.GitHub} />
         </SocialLink>
+        <SocialLink
+          href="https://storybook.tedckh.com"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Icon path={ICONS.Storybook} />
+        </SocialLink>
       </SocialLinks>
-      <CreditText>Designed & Built by Ted Chiu Ka Ho</CreditText>
+      <CreditText>Designed & Built by Ted Chiu Ka Ho</CreditText>{" "}
     </FooterContainer>
   );
 }
