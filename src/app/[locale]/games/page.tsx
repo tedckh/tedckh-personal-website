@@ -1,10 +1,42 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import styles from "./games.module.css";
 
-export const metadata: Metadata = {
-  title: "執業試溫習遊戲",
-  description: "一系列互動溫習工具。",
-};
+export async function generateMetadata({
+  params: { locale },
+}: {
+  params: { locale: string };
+}): Promise<Metadata> {
+  const gamesPageTitle = "小遊戲合集";
+  const gamesPageDescription = "一系列互動溫習工具。";
+
+  const path = "/games";
+  const url =
+    locale === "en"
+      ? `https://www.tedckh.com${path}`
+      : `https://www.tedckh.com/${locale}${path}`;
+
+  return {
+    title: gamesPageTitle,
+    description: gamesPageDescription,
+    alternates: {
+      canonical: url,
+      languages: {
+        en: "https://www.tedckh.com/games",
+        "zh-HK": "https://www.tedckh.com/zh-HK/games",
+      },
+    },
+    openGraph: {
+      title: gamesPageTitle,
+      description: gamesPageDescription,
+      url: url,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: gamesPageTitle,
+      description: gamesPageDescription,
+    },
+  };
+}
 
 const games: {
   id: string;
