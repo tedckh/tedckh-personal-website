@@ -18,30 +18,6 @@ const games: {
     description: "香港中醫執業試溫習 · 第五版教材為準 · 逐層翻牌",
     url: "/games/tcm-gynecology.html",
   },
-  {
-    id: "tcm-gynecology2",
-    title: "婦科證型方藥 · 記憶卡",
-    description: "香港中醫執業試溫習 · 第五版教材為準 · 逐層翻牌",
-    url: "/games/tcm-gynecology.html",
-  },
-  {
-    id: "tcm-gynecology3",
-    title: "婦科證型方藥 · 記憶卡",
-    description: "香港中醫執業試溫習 · 第五版教材為準 · 逐層翻牌",
-    url: "/games/tcm-gynecology.html",
-  },
-  {
-    id: "tcm-gynecology4",
-    title: "婦科證型方藥 · 記憶卡",
-    description: "香港中醫執業試溫習 · 第五版教材為準 · 逐層翻牌",
-    url: "/games/tcm-gynecology.html",
-  },
-  {
-    id: "tcm-gynecology6",
-    title: "婦科證型方藥 · 記憶卡",
-    description: "香港中醫執業試溫習 · 第五版教材為準 · 逐層翻牌",
-    url: "/games/tcm-gynecology.html",
-  },
 ];
 
 export default function GamesIndexPage() {
