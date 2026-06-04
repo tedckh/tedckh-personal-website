@@ -5,7 +5,6 @@ import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { routing } from "@/i18n/routing";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import ClientLayout from "@/components/ClientLayout";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
@@ -38,7 +37,7 @@ type Props = {
   params: Promise<{ locale: string }>;
 };
 
-export default async function LocaleLayout({ children, params }: Props) {
+export default async function RootLayout({ children, params }: Props) {
   const { locale } = await params;
 
   if (!hasLocale(routing.locales, locale)) {
@@ -53,7 +52,7 @@ export default async function LocaleLayout({ children, params }: Props) {
         <StyledComponentsRegistry>
           <CustomThemeProvider>
             <NextIntlClientProvider>
-              <ClientLayout>{children}</ClientLayout>
+              {children}
               <Analytics />
               <SpeedInsights />
             </NextIntlClientProvider>
