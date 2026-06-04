@@ -20,11 +20,6 @@ export default function IndexPage({ params }: Props) {
       <About />
       <Skills />
       <Contact />
-      <p style={{ textAlign: "center", marginTop: "2rem" }}>
-        <a href="/example-static-page.html" target="_blank" rel="noopener noreferrer" style={{ color: "blue", textDecoration: "underline" }}>
-          View Example Static HTML Page
-        </a>
-      </p>
     </>
   );
 }
