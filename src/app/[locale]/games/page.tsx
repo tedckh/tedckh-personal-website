@@ -46,9 +46,15 @@ const games: {
 }[] = [
   {
     id: "tcm-gynecology",
-    title: "婦科證型方藥 · 記憶卡",
+    title: "婦科證型方藥 · 記憶卡 1",
     description: "香港中醫執業試溫習 · 第五版教材為準 · 逐層翻牌",
     url: "/games/tcm-gynecology.html",
+  },
+  {
+    id: "game2",
+    title: "內科證型方藥 · 記憶卡 1",
+    description: "香港中醫執業試溫習 · 第五版教材為準 · 逐層翻牌",
+    url: "/games/game2.html",
   },
 ];
 
