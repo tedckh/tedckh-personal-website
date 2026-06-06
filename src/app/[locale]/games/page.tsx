@@ -1,17 +1,17 @@
-import type { Metadata } from "next";
-import styles from "./games.module.css";
+import type { Metadata } from 'next';
+import styles from './games.module.css';
 
 export async function generateMetadata({
   params: { locale },
 }: {
   params: { locale: string };
 }): Promise<Metadata> {
-  const gamesPageTitle = "小遊戲合集";
-  const gamesPageDescription = "一系列互動溫習工具。";
+  const gamesPageTitle = '小遊戲合集';
+  const gamesPageDescription = '一系列互動溫習工具。';
 
-  const path = "/games";
+  const path = '/games';
   const url =
-    locale === "en"
+    locale === 'en'
       ? `https://www.tedckh.com${path}`
       : `https://www.tedckh.com/${locale}${path}`;
 
@@ -21,8 +21,8 @@ export async function generateMetadata({
     alternates: {
       canonical: url,
       languages: {
-        en: "https://www.tedckh.com/games",
-        "zh-HK": "https://www.tedckh.com/zh-HK/games",
+        en: 'https://www.tedckh.com/games',
+        'zh-HK': 'https://www.tedckh.com/zh-HK/games',
       },
     },
     openGraph: {
@@ -31,7 +31,7 @@ export async function generateMetadata({
       url: url,
     },
     twitter: {
-      card: "summary_large_image",
+      card: 'summary_large_image',
       title: gamesPageTitle,
       description: gamesPageDescription,
     },
@@ -45,16 +45,34 @@ const games: {
   url: string;
 }[] = [
   {
-    id: "tcm-gynecology",
-    title: "婦科證型方藥 · 記憶卡 1",
-    description: "香港中醫執業試溫習 · 第五版教材為準 · 逐層翻牌",
-    url: "/games/tcm-gynecology.html",
+    id: 'tcm-gynecology',
+    title: '婦科證型方藥 · 記憶卡',
+    description: '香港中醫執業試溫習 · 第五版教材為準 · 逐層翻牌',
+    url: '/games/tcm-gynecology.html',
   },
   {
-    id: "game2",
-    title: "內科證型方藥 · 記憶卡 1",
-    description: "香港中醫執業試溫習 · 第五版教材為準 · 逐層翻牌",
-    url: "/games/game2.html",
+    id: 'game2',
+    title: '內科證型方藥 · 記憶卡',
+    description: '香港中醫執業試溫習 · 第五版教材為準 · 逐層翻牌',
+    url: '/games/game2.html',
+  },
+  {
+    id: 'game3',
+    title: '兒科證型方藥 · 記憶卡',
+    description: '香港中醫執業試溫習 · 依兒科Enotes（五／七版）· 逐層翻牌',
+    url: '/games/game3.html',
+  },
+  {
+    id: 'game4',
+    title: '針灸證治 ＋ 操作 · 記憶卡',
+    description: '香港中醫執業試溫習 · 依針灸Enotes（七版為主）· 逐層翻牌',
+    url: '/games/game4.html',
+  },
+  {
+    id: 'game5',
+    title: '外科證型方藥 · 記憶卡',
+    description: '香港中醫執業試溫習 · 第五版教材為準 · 逐層翻牌',
+    url: '/games/game5.html',
   },
 ];
 

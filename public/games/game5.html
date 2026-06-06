@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>外科證型方藥記憶卡 · 執業試溫習遊戲</title>
+<style>
+  :root{
+    --bg:#0f1419; --panel:#1a2230; --panel2:#222d40; --line:#2e3b52;
+    --txt:#e7eef7; --muted:#94a3b8; --accent:#ff7a59; --accent2:#5ec1a8;
+    --gold:#f5c451; --blue:#5aa9e6; --purple:#b794f6; --red:#f06a6a;
+    --shadow:0 10px 30px rgba(0,0,0,.45);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{margin:0;font-family:"PingFang TC","Microsoft JhengHei","Noto Sans TC",system-ui,sans-serif;
+    background:radial-gradient(1200px 600px at 50% -10%,#1c2737,#0f1419 60%);color:var(--txt);min-height:100vh}
+  .wrap{max-width:760px;margin:0 auto;padding:16px 14px 60px}
+  header{text-align:center;padding:8px 0 4px}
+  h1{font-size:22px;margin:0;letter-spacing:1px}
+  .sub{color:var(--muted);font-size:13px;margin-top:4px}
+
+  .stats{display:flex;gap:8px;justify-content:center;margin:14px 0 6px;flex-wrap:wrap}
+  .chip{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:6px 12px;font-size:13px;color:var(--muted)}
+  .chip b{color:var(--gold);font-size:15px}
+  .chip.ok b{color:var(--accent2)} .chip.no b{color:var(--red)}
+
+  .cats{display:flex;gap:6px;overflow-x:auto;padding:10px 2px;margin-bottom:6px;scrollbar-width:none}
+  .cats::-webkit-scrollbar{display:none}
+  .cat{flex:0 0 auto;background:var(--panel);border:1px solid var(--line);color:var(--muted);
+    border-radius:18px;padding:7px 14px;font-size:14px;cursor:pointer;white-space:nowrap;transition:.15s}
+  .cat.active{background:linear-gradient(135deg,var(--accent),#ff9a76);color:#1a1209;border-color:transparent;font-weight:700}
+
+  .progress{height:6px;background:var(--panel);border-radius:6px;overflow:hidden;margin:6px 2px 14px}
+  .progress > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent2),var(--blue));width:0;transition:.3s}
+
+  .card{background:linear-gradient(160deg,var(--panel),var(--panel2));border:1px solid var(--line);
+    border-radius:22px;box-shadow:var(--shadow);padding:22px 20px;min-height:380px;
+    display:flex;flex-direction:column;position:relative;overflow:hidden}
+  .card::before{content:"";position:absolute;inset:0;background:radial-gradient(400px 200px at 80% 0%,rgba(255,122,89,.08),transparent 60%);pointer-events:none}
+  .badge{align-self:flex-start;font-size:12px;color:var(--muted);background:#0e1622;border:1px solid var(--line);
+    border-radius:14px;padding:4px 10px;margin-bottom:4px}
+  .disease{font-size:30px;font-weight:800;letter-spacing:1px;margin:6px 0 2px}
+  .zheng{font-size:20px;color:var(--gold);font-weight:700;margin-bottom:2px}
+  .layers{margin-top:14px;display:flex;flex-direction:column;gap:12px;flex:1}
+
+  .layer{border-radius:14px;border:1px dashed var(--line);background:#0e1622aa;overflow:hidden;transition:.2s}
+  .layer .lh{display:flex;align-items:center;gap:8px;padding:11px 14px;font-size:13px;color:var(--muted);cursor:pointer}
+  .layer .lh .ico{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700;
+    background:var(--panel);border:1px solid var(--line);color:var(--muted)}
+  .layer .body{padding:0 14px;max-height:0;opacity:0;transition:max-height .35s ease,opacity .25s,padding .25s}
+  .layer.open{border-style:solid}
+  .layer.open .body{max-height:420px;opacity:1;padding:0 14px 14px}
+  .layer.open .lh{color:var(--txt)}
+  .layer.open .ico{background:var(--accent2);border-color:transparent;color:#06231b}
+  .layer.locked{opacity:.45}
+  .layer.locked .lh{cursor:not-allowed}
+
+  .l-def.open{box-shadow:inset 0 0 0 1px var(--purple)}
+  .l-def .deftxt{font-size:15px;line-height:1.75}
+  .l-def .deftxt b{color:var(--purple)}
+  .l-def .ji{margin-top:8px;font-size:15px;line-height:1.75}
+  .l-def .ji b{color:var(--accent2)}
+  .l-zhifa.open{box-shadow:inset 0 0 0 1px var(--blue)}
+  .l-zhifa .val{font-size:19px;color:var(--blue);font-weight:700}
+  .l-fang.open{box-shadow:inset 0 0 0 1px var(--accent)}
+  .l-fang .val{font-size:23px;color:var(--accent);font-weight:800;letter-spacing:1px;line-height:1.5}
+  .l-yao .compose{font-size:16px;line-height:1.7}
+
+  .tap-hint{text-align:center;color:var(--muted);font-size:13px;margin-top:8px;animation:blink 1.6s infinite}
+  @keyframes blink{0%,100%{opacity:.4}50%{opacity:1}}
+
+  .controls{display:flex;gap:10px;margin-top:16px}
+  .btn{flex:1;border:none;border-radius:14px;padding:14px;font-size:16px;font-weight:700;cursor:pointer;transition:.15s;font-family:inherit}
+  .btn:active{transform:scale(.97)}
+  .btn.reveal{background:linear-gradient(135deg,var(--accent),#ff9a76);color:#1a1209}
+  .btn.no{background:#3a2330;color:var(--red);border:1px solid #5a2f3f}
+  .btn.ok{background:#1f3a32;color:var(--accent2);border:1px solid #2f5a4d}
+  .nav{display:flex;gap:10px;margin-top:10px}
+  .nav .btn{background:var(--panel);color:var(--muted);border:1px solid var(--line);font-size:14px;padding:11px}
+
+  .toolbar{display:flex;gap:8px;justify-content:center;margin-top:18px;flex-wrap:wrap}
+  .tool{background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:12px;
+    padding:8px 14px;font-size:13px;cursor:pointer;font-family:inherit}
+  .tool:active{background:var(--panel)}
+
+  .done{text-align:center;padding:40px 20px}
+  .done .big{font-size:46px;margin-bottom:8px}
+  .done h2{margin:6px 0}
+  footer{text-align:center;color:#5b6677;font-size:11px;margin-top:24px;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>外科證型方藥 · 記憶卡</h1>
+    <div class="sub">香港中醫執業試溫習 · 第五版教材為準 · 逐層翻牌</div>
+  </header>
+
+  <div class="stats">
+    <span class="chip">進度 <b id="s-pos">0</b>/<span id="s-total">0</span></span>
+    <span class="chip ok">識得 <b id="s-ok">0</b></span>
+    <span class="chip no">要溫 <b id="s-no">0</b></span>
+  </div>
+
+  <div class="cats" id="cats"></div>
+  <div class="progress"><i id="bar"></i></div>
+
+  <div id="cardArea"></div>
+
+  <div class="toolbar">
+    <button class="tool" id="t-shuffle">🔀 隨機洗牌</button>
+    <button class="tool" id="t-review">⚠️ 只溫「要溫」</button>
+    <button class="tool" id="t-reset">↺ 重新開始</button>
+  </div>
+
+  <footer>
+    內容依《中醫外科學》教材及外科eNotes整理。<br>
+    臨證以教材原文為準；如有疑問請核對課本。祝 Alex 考試順利 🌿
+  </footer>
+</div>
+
+<script>
+const DATA = [
+/* ===== 瘡瘍 ===== */
+{c:"瘡瘍",d:"癤",z:"熱毒蘊結證",f:"清熱解毒",r:"五味消毒飲合黃連解毒湯",
+ m:"金銀花、野菊花、蒲公英、紫花地丁、紫背天葵＋黃連、黃芩、黃柏、梔子"},
+{c:"瘡瘍",d:"癤",z:"暑熱浸淫證",f:"清暑化濕解毒",r:"清暑湯",
+ m:"連翹、天花粉、赤芍、金銀花、甘草、滑石、車前子、澤瀉"},
+{c:"瘡瘍",d:"癤",z:"體虛毒戀·陰虛內熱證",f:"養陰清熱解毒",r:"仙方活命飲合增液湯",
+ m:"金銀花、防風、白芷、當歸尾、陳皮、赤芍、貝母、天花粉、乳香、沒藥、皂角刺、穿山甲、甘草＋玄參、麥冬、生地"},
+{c:"瘡瘍",d:"癤",z:"體虛毒戀·脾胃虛弱證",f:"健脾和胃，清化濕熱",r:"五神湯合參苓白朮散",
+ m:"茯苓、金銀花、牛膝、車前子、紫花地丁＋人參、白朮、山藥、蓮子、白扁豆、薏苡仁、砂仁、桔梗、甘草"},
+
+{c:"瘡瘍",d:"顏面部疔瘡",z:"熱毒蘊結證",f:"清熱解毒",r:"五味消毒飲合黃連解毒湯",
+ m:"金銀花、野菊花、蒲公英、紫花地丁、紫背天葵＋黃連、黃芩、黃柏、梔子"},
+{c:"瘡瘍",d:"顏面部疔瘡",z:"火毒熾盛證",f:"涼血清熱解毒",r:"犀角地黃湯合黃連解毒湯、五味消毒飲",
+ m:"水牛角、生地、赤芍、丹皮＋黃連、黃芩、黃柏、梔子＋金銀花、野菊花、蒲公英、紫花地丁、紫背天葵"},
+
+{c:"瘡瘍",d:"手足部疔瘡",z:"火毒凝結證",f:"清熱解毒",r:"五味消毒飲合黃連解毒湯",
+ m:"金銀花、野菊花、蒲公英、紫花地丁、紫背天葵＋黃連、黃芩、黃柏、梔子"},
+{c:"瘡瘍",d:"手足部疔瘡",z:"熱勝肉腐證",f:"清熱透膿托毒",r:"五味消毒飲、黃連解毒湯加皂角刺、穿山甲",
+ m:"金銀花、野菊花、蒲公英、紫花地丁、紫背天葵、黃連、黃芩、黃柏、梔子＋皂角刺、穿山甲"},
+{c:"瘡瘍",d:"手足部疔瘡",z:"濕熱下注證",f:"清熱解毒利濕",r:"五神湯合萆薢滲濕湯",
+ m:"茯苓、金銀花、牛膝、車前子、紫花地丁＋萆薢、薏苡仁、黃柏、赤茯苓、丹皮、澤瀉、滑石、通草"},
+
+{c:"瘡瘍",d:"紅絲疔",z:"火毒入絡證",f:"清熱解毒",r:"五味消毒飲",
+ m:"金銀花、野菊花、蒲公英、紫花地丁、紫背天葵"},
+{c:"瘡瘍",d:"紅絲疔",z:"火毒入營證",f:"涼血清營，解毒散結",r:"犀角地黃湯合黃連解毒湯、五味消毒飲",
+ m:"水牛角、生地、赤芍、丹皮＋黃連、黃芩、黃柏、梔子＋金銀花、野菊花、蒲公英、紫花地丁、紫背天葵"},
+
+{c:"瘡瘍",d:"疫疔",z:"疫毒蘊結證",f:"清熱解毒，和營消腫",r:"仙方活命飲合黃連解毒湯",
+ m:"金銀花、防風、白芷、當歸尾、陳皮、赤芍、貝母、天花粉、乳香、沒藥、皂角刺、穿山甲、甘草＋黃連、黃芩、黃柏、梔子"},
+
+{c:"瘡瘍",d:"癰",z:"火毒凝結證",f:"清熱解毒，行瘀活血",r:"仙方活命飲",
+ m:"金銀花、防風、白芷、當歸尾、陳皮、赤芍、貝母、天花粉、乳香、沒藥、皂角刺、穿山甲、甘草"},
+{c:"瘡瘍",d:"癰",z:"熱勝肉腐證",f:"和營清熱，透膿托毒",r:"仙方活命飲合五味消毒飲",
+ m:"金銀花、防風、白芷、當歸尾、陳皮、赤芍、貝母、天花粉、乳香、沒藥、皂角刺、穿山甲、甘草＋野菊花、蒲公英、紫花地丁、紫背天葵"},
+{c:"瘡瘍",d:"癰",z:"氣血兩虛證",f:"益氣養血，托毒生肌",r:"托裏消毒散",
+ m:"人參、黃芪、白朮、茯苓、當歸、川芎、白芍、金銀花、白芷、皂角刺、桔梗、甘草"},
+
+{c:"瘡瘍",d:"頸癰",z:"風熱痰毒證",f:"散風清熱，化痰消腫",r:"牛蒡解肌湯（或銀翹散）",
+ m:"牛蒡子、薄荷、荊芥、連翹、山梔、丹皮、石斛、玄參、夏枯草"},
+
+{c:"瘡瘍",d:"腋癰",z:"肝鬱痰火證",f:"清肝解鬱，消腫化毒",r:"柴胡清肝湯",
+ m:"柴胡、生地、當歸、白芍、川芎、連翹、牛蒡子、黃芩、梔子、天花粉、甘草、防風"},
+
+{c:"瘡瘍",d:"臍癰",z:"濕熱火毒證",f:"清火利濕解毒",r:"黃連解毒湯合四苓散",
+ m:"黃連、黃芩、黃柏、梔子＋豬苓、茯苓、白朮、澤瀉"},
+{c:"瘡瘍",d:"臍癰",z:"脾氣虛弱證",f:"健脾益氣，托毒生肌",r:"四君子湯",
+ m:"人參、白朮、茯苓、甘草"},
+
+{c:"瘡瘍",d:"委中毒",z:"氣滯血瘀證",f:"和營活血，消腫散結",r:"活血散瘀湯",
+ m:"川芎、當歸尾、赤芍、蘇木、丹皮、枳殼、瓜蔞仁、桃仁、檳榔、大黃"},
+{c:"瘡瘍",d:"委中毒",z:"濕熱蘊阻證",f:"清利濕熱，和營活血",r:"活血散瘀湯合五神湯",
+ m:"川芎、當歸尾、赤芍、蘇木、丹皮、枳殼、桃仁、大黃＋茯苓、金銀花、牛膝、車前子、紫花地丁"},
+{c:"瘡瘍",d:"委中毒",z:"氣血兩虧證",f:"調補氣血",r:"八珍湯",
+ m:"人參、白朮、茯苓、甘草、當歸、川芎、白芍、熟地"},
+
+{c:"瘡瘍",d:"有頭疽",z:"火毒凝結證",f:"清熱瀉火，和營托毒",r:"黃連解毒湯合仙方活命飲",
+ m:"黃連、黃芩、黃柏、梔子＋金銀花、防風、白芷、當歸尾、赤芍、貝母、天花粉、乳香、沒藥、皂角刺、穿山甲、甘草"},
+{c:"瘡瘍",d:"有頭疽",z:"濕熱壅滯證",f:"清熱化濕，和營托毒",r:"仙方活命飲",
+ m:"金銀花、防風、白芷、當歸尾、陳皮、赤芍、貝母、天花粉、乳香、沒藥、皂角刺、穿山甲、甘草"},
+{c:"瘡瘍",d:"有頭疽",z:"陰虛火熾證",f:"滋陰生津，清熱托毒",r:"竹葉黃芪湯",
+ m:"竹葉、黃芪、生地、麥冬、當歸、川芎、黃芩、芍藥、人參、半夏、石膏、甘草、燈心"},
+{c:"瘡瘍",d:"有頭疽",z:"氣虛毒滯證",f:"扶正托毒",r:"托裏消毒散",
+ m:"人參、黃芪、白朮、茯苓、當歸、川芎、白芍、金銀花、白芷、皂角刺、桔梗、甘草"},
+
+{c:"瘡瘍",d:"流注",z:"餘毒攻竄證",f:"清熱解毒，涼血通絡",r:"黃連解毒湯合犀角地黃湯",
+ m:"黃連、黃芩、黃柏、梔子＋水牛角、生地、赤芍、丹皮"},
+{c:"瘡瘍",d:"流注",z:"暑濕交阻證",f:"解毒清暑化濕",r:"清暑湯",
+ m:"連翹、天花粉、赤芍、金銀花、甘草、滑石、車前子、澤瀉"},
+{c:"瘡瘍",d:"流注",z:"瘀血凝滯證",f:"和營活血，祛瘀通絡",r:"活血散瘀湯",
+ m:"川芎、當歸尾、赤芍、蘇木、丹皮、枳殼、瓜蔞仁、桃仁、檳榔、大黃"},
+
+{c:"瘡瘍",d:"丹毒",z:"風熱毒蘊證（抱頭火丹）",f:"疏風清熱解毒",r:"普濟消毒飲",
+ m:"黃芩、黃連、陳皮、甘草、玄參、柴胡、桔梗、連翹、板藍根、馬勃、牛蒡子、薄荷、僵蠶、升麻"},
+{c:"瘡瘍",d:"丹毒",z:"肝脾濕火證（內發丹毒）",f:"清肝瀉火利濕",r:"柴胡清肝湯（或龍膽瀉肝湯、化斑解毒湯）",
+ m:"柴胡、生地、當歸、白芍、川芎、連翹、牛蒡子、黃芩、梔子、天花粉、甘草、防風"},
+{c:"瘡瘍",d:"丹毒",z:"濕熱毒蘊證（流火）",f:"利濕清熱解毒",r:"五神湯合萆薢滲濕湯",
+ m:"茯苓、金銀花、牛膝、車前子、紫花地丁＋萆薢、薏苡仁、黃柏、赤茯苓、丹皮、澤瀉、滑石、通草"},
+{c:"瘡瘍",d:"丹毒",z:"胎火蘊毒證（赤遊丹）",f:"涼血清熱解毒",r:"犀角地黃湯合黃連解毒湯",
+ m:"水牛角、生地、赤芍、丹皮＋黃連、黃芩、黃柏、梔子"},
+
+{c:"瘡瘍",d:"走黃",z:"毒盛入血證",f:"涼血清熱解毒",r:"犀角地黃湯合黃連解毒湯、五味消毒飲",
+ m:"水牛角、生地、赤芍、丹皮＋黃連、黃芩、黃柏、梔子＋金銀花、野菊花、蒲公英、紫花地丁、紫背天葵"},
+
+{c:"瘡瘍",d:"內陷",z:"火陷證（邪盛熱極）",f:"涼血清熱解毒，養陰清心開竅",r:"清營湯合黃連解毒湯（送服安宮牛黃丸／紫雪丹）",
+ m:"水牛角、生地、玄參、麥冬、丹參、黃連、金銀花、連翹、竹葉＋黃芩、黃柏、梔子"},
+{c:"瘡瘍",d:"內陷",z:"乾陷證（正虛邪盛）",f:"補養氣血，托毒透邪，佐以清心安神",r:"托裏消毒散合安宮牛黃丸",
+ m:"人參、黃芪、白朮、茯苓、當歸、川芎、白芍、金銀花、白芷、皂角刺、桔梗、甘草"},
+{c:"瘡瘍",d:"內陷",z:"虛陷證（脾腎陽衰）",f:"溫補脾腎（陽虛）／生津養胃（陰傷）",r:"附子理中湯（或六味地黃湯）",
+ m:"附子、人參、白朮、乾薑、甘草"},
+
+{c:"瘡瘍",d:"瘰癘",z:"氣滯痰凝證",f:"疏肝養血，健脾化痰",r:"開鬱散（逍遙散合二陳湯加減）",
+ m:"柴胡、當歸、白芍、白朮、茯苓、香附、鬱金、貝母、半夏、陳皮、甘草"},
+{c:"瘡瘍",d:"瘰癘",z:"陰虛火旺證",f:"滋陰降火",r:"六味地黃丸合清骨散",
+ m:"熟地、山藥、山茱萸、茯苓、丹皮、澤瀉＋銀柴胡、胡黃連、秦艽、鱉甲、地骨皮、青蒿、知母、甘草"},
+{c:"瘡瘍",d:"瘰癘",z:"氣血兩虛證",f:"益氣養血，托毒消腫",r:"香貝養榮湯",
+ m:"香附、貝母、人參、白朮、茯苓、陳皮、熟地、川芎、當歸、白芍、桔梗、甘草、生薑、大棗"},
+
+{c:"瘡瘍",d:"流痰",z:"陽虛痰凝證",f:"溫陽散寒，化痰通絡",r:"陽和湯",
+ m:"熟地、鹿角膠、肉桂、麻黃、白芥子、炮薑炭、生甘草"},
+{c:"瘡瘍",d:"流痰",z:"陰虛內熱證",f:"養陰除蒸，托毒透膿",r:"六味地黃丸合清骨散",
+ m:"熟地、山藥、山茱萸、茯苓、丹皮、澤瀉＋銀柴胡、胡黃連、秦艽、鱉甲、地骨皮、青蒿、知母、甘草"},
+{c:"瘡瘍",d:"流痰",z:"肝腎虧虛證（氣血兩虛）",f:"補益氣血，培補肝腎",r:"香貝養榮湯（或大補陰丸）",
+ m:"香附、貝母、人參、白朮、茯苓、陳皮、熟地、川芎、當歸、白芍、桔梗、甘草、生薑、大棗"},
+
+/* ===== 乳房病 ===== */
+{c:"乳房病",d:"乳癰",z:"氣滯熱壅證（初起）",f:"疏肝清胃，通乳消腫",r:"瓜蔞牛蒡湯",
+ m:"瓜蔞、牛蒡子、天花粉、黃芩、梔子、金銀花、連翹、皂角刺、青皮、陳皮、柴胡、生甘草"},
+{c:"乳房病",d:"乳癰",z:"熱毒熾盛證（成膿）",f:"清熱解毒，托裏透膿",r:"透膿散加味",
+ m:"黃芪、當歸、川芎、皂角刺、穿山甲（加金銀花、連翹、瓜蔞）"},
+{c:"乳房病",d:"乳癰",z:"正虛毒戀證（潰後）",f:"益氣和營托毒",r:"托裏消毒散",
+ m:"人參、黃芪、白朮、茯苓、當歸、川芎、白芍、金銀花、白芷、皂角刺、桔梗、甘草"},
+
+{c:"乳房病",d:"乳癆",z:"氣滯痰凝證（初起）",f:"疏肝解鬱，化痰散結",r:"開鬱散合消癘丸",
+ m:"白芍、當歸、白朮、茯苓、柴胡、香附、鬱金、天葵子、白芥子、全蠍、甘草"},
+{c:"乳房病",d:"乳癆",z:"正虛邪戀證（成膿潰後）",f:"扶正託毒透膿",r:"托裏消毒散",
+ m:"人參、黃芪、白朮、茯苓、當歸、川芎、白芍、金銀花、白芷、皂角刺、桔梗、甘草"},
+{c:"乳房病",d:"乳癆",z:"陰虛痰熱證",f:"養陰清熱化痰",r:"六味地黃湯合清骨散",
+ m:"熟地、山藥、山茱萸、茯苓、丹皮、澤瀉＋銀柴胡、胡黃連、秦艽、鱉甲、地骨皮、青蒿、知母、甘草"},
+
+{c:"乳房病",d:"乳癖",z:"肝鬱痰凝證",f:"疏肝解鬱，化痰散結",r:"逍遙蔞貝散",
+ m:"柴胡、當歸、白芍、白朮、茯苓、瓜蔞、貝母、半夏、南星、生牡蠣、山慈菇"},
+{c:"乳房病",d:"乳癖",z:"沖任失調證",f:"調攝沖任",r:"二仙湯合四物湯",
+ m:"仙茅、淫羊藿、巴戟天、當歸、黃柏、知母＋川芎、白芍、熟地"},
+
+{c:"乳房病",d:"乳衄",z:"肝火偏旺證",f:"疏肝解鬱，清熱涼血",r:"丹梔逍遙散",
+ m:"丹皮、梔子、柴胡、當歸、白芍、白朮、茯苓、甘草、薄荷、煨薑"},
+{c:"乳房病",d:"乳衄",z:"脾不統血證",f:"健脾養血",r:"歸脾湯",
+ m:"人參、黃芪、白朮、茯神、酸棗仁、龍眼肉、當歸、遠志、木香、炙甘草、生薑、大棗"},
+
+{c:"乳房病",d:"乳岩",z:"肝鬱痰凝證",f:"疏肝解鬱，化痰散結",r:"神效瓜蔞散合開鬱散",
+ m:"瓜蔞、當歸、乳香、沒藥、甘草＋白芍、白朮、茯苓、柴胡、香附、鬱金、白芥子、全蠍"},
+{c:"乳房病",d:"乳岩",z:"沖任失調證",f:"調攝沖任，理氣散結",r:"二仙湯合開鬱散",
+ m:"仙茅、淫羊藿、巴戟天、當歸、黃柏、知母＋白芍、白朮、茯苓、柴胡、香附、鬱金、白芥子、全蠍"},
+{c:"乳房病",d:"乳岩",z:"正虛毒熾證",f:"調補氣血，清熱解毒",r:"八珍湯加減",
+ m:"人參、白朮、茯苓、甘草、當歸、川芎、白芍、熟地"},
+{c:"乳房病",d:"乳岩",z:"脾虛胃弱證（術後／放化療後）",f:"健脾和胃",r:"參苓白朮散（或理中湯）",
+ m:"人參、白朮、茯苓、甘草、山藥、蓮子、白扁豆、薏苡仁、砂仁、桔梗"},
+
+/* ===== 癭瘤 ===== */
+{c:"癭瘤",d:"氣癭",z:"肝鬱氣滯證",f:"疏肝解鬱，化痰軟堅",r:"四海舒鬱丸",
+ m:"青木香、陳皮、海蛤粉、海帶、海藻、昆布、海螵蛸"},
+
+{c:"癭瘤",d:"肉癭",z:"氣滯痰凝證",f:"理氣解鬱，化痰軟堅",r:"逍遙散合海藻玉壺湯",
+ m:"柴胡、當歸、白芍、白朮、茯苓、甘草＋海藻、昆布、海帶、半夏、陳皮、青皮、連翹、貝母、川芎、獨活"},
+{c:"癭瘤",d:"肉癭",z:"氣陰兩虛證",f:"益氣養陰，軟堅散結",r:"生脈散合海藻玉壺湯",
+ m:"人參、麥冬、五味子＋海藻、昆布、海帶、半夏、陳皮、青皮、連翹、貝母、當歸、川芎"},
+
+{c:"癭瘤",d:"石癭",z:"痰瘀內結證",f:"解鬱化痰，活血消堅",r:"海藻玉壺湯合桃紅四物湯",
+ m:"海藻、昆布、海帶、半夏、陳皮、青皮、連翹、貝母、當歸、川芎、獨活、甘草＋桃仁、紅花、赤芍、熟地"},
+{c:"癭瘤",d:"石癭",z:"瘀熱傷陰證",f:"和營養陰",r:"通竅活血湯合養陰清肺湯",
+ m:"赤芍、川芎、桃仁、紅花、麝香、老蔥、生薑、大棗、黃酒＋生地、麥冬、玄參、丹皮、白芍、貝母、薄荷、甘草"},
+
+{c:"癭瘤",d:"肉瘤",z:"痰氣凝結證",f:"理氣化痰，健脾祛濕",r:"二陳湯合四君子湯",
+ m:"半夏、陳皮、茯苓、甘草＋人參、白朮"},
+
+/* ===== 皮膚病 ===== */
+{c:"皮膚病",d:"熱瘡",z:"肺胃熱盛證",f:"疏風清熱解毒",r:"辛夷清肺飲合竹葉石膏湯",
+ m:"辛夷、黃芩、山梔、麥冬、百合、石膏、知母、甘草、枇杷葉、升麻"},
+{c:"皮膚病",d:"熱瘡",z:"濕熱下注證",f:"清熱利濕",r:"龍膽瀉肝湯加板藍根",
+ m:"龍膽草、黃芩、梔子、澤瀉、木通、車前子、當歸、生地、柴胡、甘草＋板藍根"},
+{c:"皮膚病",d:"熱瘡",z:"陰虛內熱證",f:"養陰清熱解毒",r:"增液湯加板藍根、馬齒莧",
+ m:"玄參、麥冬、生地＋板藍根、馬齒莧"},
+
+{c:"皮膚病",d:"蛇串瘡",z:"肝經鬱熱證",f:"清肝瀉火，解毒止痛",r:"龍膽瀉肝湯",
+ m:"龍膽草、黃芩、梔子、澤瀉、木通、車前子、當歸、生地、柴胡、甘草"},
+{c:"皮膚病",d:"蛇串瘡",z:"脾虛濕蘊證",f:"健脾利濕，解毒止痛",r:"除濕胃苓湯",
+ m:"蒼朮、厚朴、陳皮、甘草、豬苓、澤瀉、白朮、茯苓、滑石、防風、梔子、木通、肉桂"},
+{c:"皮膚病",d:"蛇串瘡",z:"氣滯血瘀證（後遺神經痛）",f:"理氣活血，通絡止痛",r:"柴胡疏肝散合桃紅四物湯",
+ m:"柴胡、白芍、川芎、香附、陳皮、枳殼、甘草＋桃仁、紅花、當歸、熟地"},
+
+{c:"皮膚病",d:"黃水瘡",z:"暑濕熱蘊證",f:"清暑利濕解毒",r:"清暑湯",
+ m:"連翹、天花粉、赤芍、金銀花、甘草、滑石、車前子、澤瀉"},
+{c:"皮膚病",d:"黃水瘡",z:"脾虛濕滯證",f:"健脾滲濕",r:"參苓白朮散",
+ m:"人參、白朮、茯苓、甘草、山藥、蓮子、白扁豆、薏苡仁、砂仁、桔梗"},
+
+{c:"皮膚病",d:"濕瘡",z:"濕熱蘊膚證（急性）",f:"清熱利濕止癢",r:"龍膽瀉肝湯合萆薢滲濕湯",
+ m:"龍膽草、黃芩、梔子、澤瀉、木通、車前子、當歸、生地、柴胡、甘草＋萆薢、薏苡仁、黃柏、赤茯苓、丹皮、滑石、通草"},
+{c:"皮膚病",d:"濕瘡",z:"脾虛濕蘊證（亞急性）",f:"健脾利濕止癢",r:"除濕胃苓湯（或參苓白朮散）",
+ m:"蒼朮、厚朴、陳皮、甘草、豬苓、澤瀉、白朮、茯苓、滑石、防風、梔子、木通、肉桂"},
+{c:"皮膚病",d:"濕瘡",z:"血虛風燥證（慢性）",f:"養血潤膚，祛風止癢",r:"當歸飲子（或四物消風飲）",
+ m:"當歸、白芍、川芎、生地、白蒺藜、防風、荊芥、何首烏、黃芪、甘草"},
+
+{c:"皮膚病",d:"接觸性皮炎",z:"風熱蘊膚證",f:"疏風清熱止癢",r:"消風散",
+ m:"荊芥、防風、蟬蛻、牛蒡子、苦參、蒼朮、石膏、知母、當歸、生地、胡麻、木通、甘草"},
+{c:"皮膚病",d:"接觸性皮炎",z:"濕熱毒蘊證",f:"清熱祛濕，涼血解毒",r:"龍膽瀉肝湯合化斑解毒湯",
+ m:"龍膽草、黃芩、梔子、澤瀉、木通、車前子、當歸、生地、柴胡、甘草＋石膏、知母、玄參、連翹、牛蒡子、黃連、升麻"},
+{c:"皮膚病",d:"接觸性皮炎",z:"血虛風燥證",f:"養血潤燥，祛風止癢",r:"當歸飲子（或消風散）",
+ m:"當歸、白芍、川芎、生地、白蒺藜、防風、荊芥、何首烏、黃芪、甘草"},
+
+{c:"皮膚病",d:"藥毒（藥疹）",z:"濕毒蘊膚證",f:"清熱利濕，解毒止癢",r:"萆薢滲濕湯",
+ m:"萆薢、薏苡仁、黃柏、赤茯苓、丹皮、澤瀉、滑石、通草"},
+{c:"皮膚病",d:"藥毒（藥疹）",z:"熱毒入營證",f:"清營解毒，涼血護陰",r:"清營湯",
+ m:"水牛角、生地、玄參、麥冬、丹參、黃連、金銀花、連翹、竹葉"},
+{c:"皮膚病",d:"藥毒（藥疹）",z:"氣陰兩虛證",f:"益氣養陰清熱",r:"增液湯合益胃湯",
+ m:"玄參、麥冬、生地＋沙參、玉竹、冰糖"},
+
+{c:"皮膚病",d:"牛皮癬（攝領瘡）",z:"肝鬱化火證",f:"疏肝理氣，清肝瀉火",r:"龍膽瀉肝湯",
+ m:"龍膽草、黃芩、梔子、澤瀉、木通、車前子、當歸、生地、柴胡、甘草"},
+{c:"皮膚病",d:"牛皮癬（攝領瘡）",z:"風濕蘊膚證",f:"疏風利濕，清熱止癢",r:"消風散",
+ m:"荊芥、防風、蟬蛻、牛蒡子、苦參、蒼朮、石膏、知母、當歸、生地、胡麻、木通、甘草"},
+{c:"皮膚病",d:"牛皮癬（攝領瘡）",z:"血虛風燥證",f:"養血潤燥，息風止癢",r:"當歸飲子",
+ m:"當歸、白芍、川芎、生地、白蒺藜、防風、荊芥、何首烏、黃芪、甘草"},
+
+{c:"皮膚病",d:"粉刺",z:"肺經風熱證",f:"疏風宣肺清熱",r:"枇杷清肺飲",
+ m:"枇杷葉、桑白皮、黃連、黃柏、人參、甘草"},
+{c:"皮膚病",d:"粉刺",z:"腸胃濕熱證",f:"清熱除濕解毒",r:"茵陳蒿湯",
+ m:"茵陳、梔子、大黃"},
+{c:"皮膚病",d:"粉刺",z:"痰濕瘀滯證",f:"除濕化痰，活血散結",r:"二陳湯合桃紅四物湯",
+ m:"半夏、陳皮、茯苓、甘草＋桃仁、紅花、當歸、川芎、白芍、熟地"},
+
+{c:"皮膚病",d:"癮疹",z:"風寒束表證",f:"疏風散寒止癢",r:"麻黃桂枝各半湯",
+ m:"麻黃、桂枝、白芍、杏仁、生薑、大棗、甘草"},
+{c:"皮膚病",d:"癮疹",z:"風熱犯表證",f:"疏風清熱止癢",r:"消風散",
+ m:"荊芥、防風、蟬蛻、牛蒡子、苦參、蒼朮、石膏、知母、當歸、生地、胡麻、木通、甘草"},
+{c:"皮膚病",d:"癮疹",z:"胃腸濕熱證",f:"疏風解表，通腑泄熱",r:"防風通聖散",
+ m:"防風、荊芥、薄荷、麻黃、大黃、芒硝、梔子、滑石、石膏、黃芩、連翹、桔梗、川芎、當歸、白芍、白朮、甘草"},
+{c:"皮膚病",d:"癮疹",z:"血虛風燥證",f:"養血祛風潤燥",r:"當歸飲子",
+ m:"當歸、白芍、川芎、生地、白蒺藜、防風、荊芥、何首烏、黃芪、甘草"},
+
+/* ===== 肛腸病 ===== */
+{c:"肛腸病",d:"內痔",z:"風熱腸燥證",f:"清熱涼血祛風潤燥",r:"涼血地黃湯",
+ m:"生地、當歸、地榆、槐角、黃連、天花粉、甘草、升麻、赤芍、枳殼、黃芩、荊芥"},
+{c:"肛腸病",d:"內痔",z:"濕熱下注證",f:"清熱利濕止血",r:"臟連丸",
+ m:"黃連、黃芩、地黃、赤芍、當歸、槐角、槐花、荊芥穗、地榆炭、阿膠"},
+{c:"肛腸病",d:"內痔",z:"氣滯血瘀證",f:"清熱利濕，行氣活血",r:"止痛如神湯",
+ m:"秦艽、桃仁、皂角子、蒼朮、防風、黃柏、當歸尾、澤瀉、檳榔、熟大黃"},
+{c:"肛腸病",d:"內痔",z:"脾虛氣陷證",f:"補中益氣，升提固脫",r:"補中益氣湯",
+ m:"黃芪、人參、白朮、炙甘草、當歸、陳皮、升麻、柴胡"},
+
+{c:"肛腸病",d:"肛裂",z:"血熱腸燥證",f:"清熱潤腸通便",r:"涼血地黃湯合脾約麻仁丸",
+ m:"生地、當歸、地榆、槐角、黃連、赤芍、枳殼、黃芩、荊芥＋火麻仁、白芍、枳實、大黃、厚朴、杏仁"},
+{c:"肛腸病",d:"肛裂",z:"陰虛津虧證",f:"養陰清熱潤腸",r:"潤腸湯",
+ m:"當歸、生地、火麻仁、桃仁、枳殼"},
+
+{c:"肛腸病",d:"肛漏（肛瘻）",z:"濕熱下注證",f:"清熱利濕",r:"二妙丸合萆薢滲濕湯",
+ m:"蒼朮、黃柏＋萆薢、薏苡仁、赤茯苓、丹皮、澤瀉、滑石、通草"},
+{c:"肛腸病",d:"肛漏（肛瘻）",z:"正虛邪戀證",f:"托裏透毒",r:"托裏消毒散",
+ m:"人參、黃芪、白朮、茯苓、當歸、川芎、白芍、金銀花、白芷、皂角刺、桔梗、甘草"},
+{c:"肛腸病",d:"肛漏（肛瘻）",z:"陰液虧損證",f:"養陰清熱",r:"青蒿鱉甲湯",
+ m:"青蒿、鱉甲、生地、知母、丹皮"},
+
+{c:"肛腸病",d:"脫肛",z:"脾虛氣陷證",f:"補氣升提，收斂固澀",r:"補中益氣湯",
+ m:"黃芪、人參、白朮、炙甘草、當歸、陳皮、升麻、柴胡"},
+{c:"肛腸病",d:"脫肛",z:"濕熱下注證",f:"清熱利濕",r:"萆薢滲濕湯",
+ m:"萆薢、薏苡仁、黃柏、赤茯苓、丹皮、澤瀉、滑石、通草"},
+
+{c:"肛腸病",d:"鎖肛痔（肛管直腸癌）",z:"濕熱蘊結證",f:"清熱利濕",r:"槐角地榆丸（槐角丸加減）",
+ m:"槐角、地榆、黃芩、防風、當歸、枳殼"},
+{c:"肛腸病",d:"鎖肛痔（肛管直腸癌）",z:"氣滯血瘀證",f:"行氣活血",r:"桃紅四物湯",
+ m:"桃仁、紅花、當歸、川芎、白芍、熟地"},
+{c:"肛腸病",d:"鎖肛痔（肛管直腸癌）",z:"氣陰兩虛證",f:"益氣養陰，清熱解毒",r:"四君子湯合增液湯",
+ m:"人參、白朮、茯苓、甘草＋玄參、麥冬、生地"},
+
+/* ===== 男性前陰病 ===== */
+{c:"男性病",d:"精濁（前列腺炎）",z:"濕熱蘊結證",f:"清熱利濕",r:"八正散（或龍膽瀉肝湯）",
+ m:"車前子、瞿麥、萹蓄、滑石、梔子、甘草梢、木通、大黃"},
+{c:"男性病",d:"精濁（前列腺炎）",z:"氣滯血瘀證",f:"活血祛瘀，行氣止痛",r:"前列腺湯（活血化瘀方）",
+ m:"丹參、澤蘭、赤芍、桃仁、紅花、王不留行、敗醬草、蒲公英、青皮、川楝子、白芷"},
+{c:"男性病",d:"精濁（前列腺炎）",z:"陰虛火旺證",f:"滋陰降火",r:"知柏地黃丸",
+ m:"知母、黃柏、熟地、山藥、山茱萸、茯苓、丹皮、澤瀉"},
+{c:"男性病",d:"精濁（前列腺炎）",z:"腎陽虛損證",f:"補腎助陽",r:"濟生腎氣丸",
+ m:"熟地、山藥、山茱萸、茯苓、丹皮、澤瀉、桂枝、附子、牛膝、車前子"},
+
+/* ===== 周圍血管病 ===== */
+{c:"周圍血管",d:"脫疽",z:"寒濕阻絡證",f:"溫陽散寒，活血通絡",r:"陽和湯",
+ m:"熟地、鹿角膠、肉桂、麻黃、白芥子、炮薑炭、生甘草"},
+{c:"周圍血管",d:"脫疽",z:"血脈瘀阻證",f:"活血化瘀，通絡止痛",r:"桃紅四物湯加炮山甲、地龍",
+ m:"桃仁、紅花、當歸、川芎、白芍、熟地＋炮穿山甲、地龍"},
+{c:"周圍血管",d:"脫疽",z:"濕熱毒盛證",f:"清熱利濕，解毒活血",r:"四妙勇安湯加連翹、黃柏",
+ m:"金銀花、玄參、當歸、甘草＋連翹、黃柏"},
+{c:"周圍血管",d:"脫疽",z:"熱毒傷陰證",f:"清熱解毒，養陰活血",r:"顧步湯",
+ m:"黃芪、石斛、當歸、牛膝、紫花地丁、人參、甘草、金銀花、菊花、蒲公英"},
+{c:"周圍血管",d:"脫疽",z:"氣陰兩虛證",f:"益氣養陰",r:"黃芪鱉甲湯",
+ m:"黃芪、鱉甲、當歸、生地、人參、肉桂、桔梗、桑白皮、紫菀、半夏、知母、赤芍、甘草、天冬、地骨皮、秦艽、白芍、茯苓、柴胡"},
+
+{c:"周圍血管",d:"股腫（下肢深靜脈血栓）",z:"濕熱下注證",f:"清熱利濕，活血通絡",r:"四妙勇安湯加味",
+ m:"金銀花、玄參、當歸、甘草（加蒼朮、黃柏、薏苡仁、牛膝、丹參、赤芍）"},
+{c:"周圍血管",d:"股腫（下肢深靜脈血栓）",z:"血脈瘀阻證",f:"活血化瘀，通絡消腫",r:"活血通脈湯",
+ m:"丹參、赤芍、當歸、川芎、桃仁、紅花、雞血藤、金銀花、土茯苓、牛膝"},
+{c:"周圍血管",d:"股腫（下肢深靜脈血栓）",z:"氣虛濕阻證",f:"益氣健脾，祛濕通絡",r:"參苓白朮散加味",
+ m:"人參、白朮、茯苓、甘草、山藥、蓮子、白扁豆、薏苡仁、砂仁、桔梗（加黃芪、丹參、澤瀉）"},
+
+/* ===== 其他外科病 ===== */
+{c:"其他",d:"腸癰",z:"瘀滯證（初期）",f:"行氣活血，通腑泄熱",r:"大黃牡丹湯合紅藤煎劑",
+ m:"大黃、丹皮、桃仁、冬瓜仁、芒硝＋紅藤、金銀花、連翹、紫花地丁、敗醬草、延胡索"},
+{c:"其他",d:"腸癰",z:"濕熱證（釀膿期）",f:"通腑瀉熱，利濕解毒",r:"復方大柴胡湯（或大黃牡丹湯合紅藤煎劑）",
+ m:"柴胡、黃芩、川楝子、延胡索、白芍、生大黃、枳殼、木香、蒲公英、甘草"},
+{c:"其他",d:"腸癰",z:"熱毒證（潰膿期）",f:"通腑排膿，養陰清熱",r:"大黃牡丹湯合透膿散",
+ m:"大黃、丹皮、桃仁、冬瓜仁、芒硝＋黃芪、當歸、川芎、皂角刺、穿山甲"},
+
+{c:"其他",d:"燒傷",z:"火毒傷津證",f:"清熱解毒，益氣養陰",r:"黃連解毒湯合增液湯",
+ m:"黃連、黃芩、黃柏、梔子＋玄參、麥冬、生地"},
+{c:"其他",d:"燒傷",z:"陰傷陽脫證",f:"回陽救逆，益氣護陰",r:"參附湯合生脈散",
+ m:"人參、附子＋麥冬、五味子"},
+{c:"其他",d:"燒傷",z:"火毒內陷證",f:"清營涼血，解毒護心開竅",r:"清營湯（或犀角地黃湯、黃連解毒湯）",
+ m:"水牛角、生地、玄參、麥冬、丹參、黃連、金銀花、連翹、竹葉"},
+{c:"其他",d:"燒傷",z:"氣血兩虛證（後期）",f:"補氣養血，托裏生肌",r:"托裏消毒散（或八珍湯）",
+ m:"人參、黃芪、白朮、茯苓、當歸、川芎、白芍、金銀花、白芷、皂角刺、桔梗、甘草"},
+{c:"其他",d:"燒傷",z:"脾虛陰傷證（後期）",f:"補氣健脾，益胃養陰",r:"益胃湯合參苓白朮散",
+ m:"沙參、麥冬、生地、玉竹、冰糖＋人參、白朮、茯苓、甘草、山藥、蓮子、白扁豆、薏苡仁、砂仁、桔梗"},
+
+{c:"其他",d:"毒蛇咬傷",z:"風毒證（神經毒）",f:"活血通絡，驅風解毒",r:"活血驅風解毒湯",
+ m:"當歸、川芎、赤芍、防風、白芷、半邊蓮、蜈蚣、全蠍、青木香、生甘草"},
+{c:"其他",d:"毒蛇咬傷",z:"火毒證（血循毒）",f:"瀉火解毒，涼血活血",r:"龍膽瀉肝湯合五味消毒飲",
+ m:"龍膽草、黃芩、梔子、澤瀉、木通、車前子、當歸、生地、柴胡、甘草＋金銀花、野菊花、蒲公英、紫花地丁、紫背天葵"},
+{c:"其他",d:"毒蛇咬傷",z:"風火毒證（混合毒）",f:"清熱解毒，熄風定驚",r:"黃連解毒湯合五虎追風散",
+ m:"黃連、黃芩、黃柏、梔子＋蟬蛻、天南星、天麻、全蠍、僵蠶"}
+];
+
+/* ---------- 病的定義 & 總病機 ---------- */
+const DEFS={
+"癤":{def:"發生在肌膚淺表部位、範圍較小的急性化膿性疾病。特點：腫勢局限，色紅灼熱疼痛，根淺3～6cm，易膿易潰易斂。",ji:"內鬱濕火、外感風邪，兩相搏結，蘊阻肌膚；或暑濕熱蘊；或陰虛內熱、脾虛便溏致正虛毒戀。"},
+"顏面部疔瘡":{def:"發生在顏面部的急性化膿性疾病。特點：瘡形如粟、根深堅硬如釘，腫脹焮熱疼痛，易走黃。",ji:"火熱之毒蘊結肌膚——多因恣食膏粱厚味、醇酒辛辣，臟腑蘊熱，火毒結聚；或皮膚破損染毒。"},
+"手足部疔瘡":{def:"發生在手足部的急性化膿性疾病，發病率手部多於足部。包括蛇眼疔、蛇頭疔、蛇腹疔、托盤疔等。",ji:"外傷染毒，或臟腑火毒凝結，氣血凝滯，熱勝肉腐成膿。"},
+"紅絲疔":{def:"發於四肢、皮膚呈紅絲一條、迅速向上走竄的急性感染性疾病（西醫急性淋巴管炎）。",ji:"手足部疔瘡或皮膚破損染毒，毒流經脈，向上走竄，內攻臟腑則成走黃。"},
+"疫疔":{def:"因接觸疫畜染毒而生疔，瘡形如臍凹陷，中醫稱「魚臍疔」（西醫皮膚炭疽）。",ji:"接觸疫畜之毒，疫毒蘊結肌膚，氣血凝滯。"},
+"癰":{def:"發生於體表皮肉之間的急性化膿性疾病。特點：局部光軟無頭，紅腫疼痛，結塊範圍6～9cm，易腫易膿易潰易斂，多不損筋骨、不易內陷。",ji:"外感六淫、過食膏粱厚味，致濕熱火毒內蘊，氣血凝滯，營衛不和，邪阻肌膚。"},
+"頸癰":{def:"發生在頸部兩側的急性化膿性疾病，俗稱「痰毒」，多見於兒童。",ji:"外感風溫風熱，挾痰蘊結少陽、陽明之絡，氣血壅滯而成。"},
+"腋癰":{def:"發生在腋部的急性化膿性疾病，又稱「夾肢癰」。",ji:"上肢皮膚破損染毒，或肝脾血熱，肝鬱痰火內蘊，氣血凝滯腋部。"},
+"臍癰":{def:"發生在臍部的急性化膿性疾病。",ji:"先天臍突、臍中濕瘡染毒，或心脾濕熱火毒結聚臍部；潰後成漏多屬脾虛。"},
+"委中毒":{def:"發生在膕窩委中穴處的急性化膿性疾病。",ji:"暑濕流注、外傷染毒，或膀胱經濕熱下注，氣血瘀阻膕窩。"},
+"有頭疽":{def:"發生於肌膚間的急性化膿性疾病。特點：初起即有粟米樣膿頭，焮熱紅腫脹痛，膿頭相繼增多狀如蓮蓬蜂窩，範圍常超過9～12cm。好發於項後、背部。",ji:"外感風溫濕熱毒邪，或臟腑蘊毒、情志內傷、膏粱厚味，致氣血凝滯、營衛不和、邪毒壅聚；陰虛、氣虛者易內陷。"},
+"流注":{def:"發生於肌肉深部的急性化膿性疾病，特點為漫腫疼痛、皮色如常、好發於四肢軀幹肌肉深處、易此處未愈他處又起（多發性、轉移性）。",ji:"餘毒、暑濕、瘀血、產後瘀露等流竄經絡肌肉，氣血凝滯而成。"},
+"丹毒":{def:"患部皮膚突然鮮紅成片、色如塗丹、灼熱腫脹、邊界清楚的急性感染性疾病。發於頭面為抱頭火丹，下肢為流火，新生兒為赤遊丹。",ji:"血分有熱，或肌膚破損、火毒之邪乘隙而入，鬱於肌膚而發。"},
+"走黃":{def:"疔瘡火毒熾盛、早期失治，毒邪走散入血、內攻臟腑的急性危重證候。",ji:"疔毒走散，毒入血分，內攻臟腑（多由顏面疔瘡擠壓或誤治引起）。"},
+"內陷":{def:"瘡瘍（疔瘡以外）正不勝邪、毒不外泄、反陷入裏、客於營血、內傳臟腑的危重證候。分火陷、乾陷、虛陷。",ji:"正氣內虛，火毒熾盛，正不勝邪，毒邪內陷入營，臟腑受損。"},
+"瘰癘":{def:"發生於頸部的慢性化膿性疾病，因其結核累累如串珠而得名（西醫頸部淋巴結結核）。",ji:"肝氣鬱結、脾失健運致痰濕內生，結於頸項；日久化熱傷陰，或氣血兩虧。"},
+"流痰":{def:"發生於骨與關節間的慢性化膿性疾病，潰後膿水清稀、夾敗絮樣物、不易收口、易成竇道（西醫骨與關節結核）。",ji:"先天不足、腎虧骼空，加之痰濁凝聚、流注骨節；陽虛痰凝，後期陰虛內熱或氣血肝腎虧虛。"},
+"乳癰":{def:"由熱毒入侵乳房而引起的急性化膿性疾病，發於哺乳期為外吹乳癰，妊娠期為內吹乳癰。",ji:"乳汁鬱積、肝鬱胃熱，乳絡阻塞，氣血壅滯，熱盛肉腐成膿。"},
+"乳癆":{def:"發生在乳房部的慢性化膿性疾病，潰後膿水清稀、夾敗絮樣物（西醫乳房結核）。",ji:"肝鬱氣滯、痰凝乳絡，或肺腎陰虛、虛火灼津成痰，痰濁結聚乳房。"},
+"乳癖":{def:"乳房部常見的慢性良性腫塊，特點為乳房脹痛及腫塊隨月經週期及情志變化而消長（西醫乳腺增生病）。",ji:"肝鬱痰凝、沖任失調，氣滯痰凝血瘀結於乳房。"},
+"乳衄":{def:"乳竅不時溢出少量血液的病證，多發於40～50歲婦女。",ji:"肝火偏旺、迫血妄行，或脾虛不能統血，血溢乳絡。"},
+"乳岩":{def:"發生在乳房部的惡性腫塊，特點為乳房腫塊堅硬如石、推之不移、潰後狀如岩穴（西醫乳腺癌）。",ji:"情志失調、肝脾氣鬱、沖任失調，氣滯痰凝血瘀互結，日久成岩。"},
+"氣癭":{def:"頸前瀰漫性腫大、邊緣不清、隨喜怒消長、皮色如常的癭病（西醫單純性甲狀腺腫）。",ji:"情志內傷、肝鬱氣滯，或水土失宜，痰氣凝結頸前。"},
+"肉癭":{def:"頸前喉結一側或兩側結塊柔韌、圓滑、可隨吞嚥上下移動的癭病（西醫甲狀腺腺瘤、結節性甲狀腺腫）。",ji:"情志內傷、肝脾氣逆，氣滯、痰凝、血瘀凝結頸前。"},
+"石癭":{def:"頸前腫塊堅硬如石、高低不平、推之不移的癭病（西醫甲狀腺癌）。",ji:"情志內傷、肝脾氣鬱，痰瘀互結日久，毒邪凝聚成石。"},
+"肉瘤":{def:"發於皮裏膜外、由脂肪組織增生而成、軟如綿、腫似饅、皮色不變的良性腫瘤（西醫脂肪瘤）。",ji:"脾失健運、痰濕內生，氣滯痰凝，聚而成形。"},
+"熱瘡":{def:"發熱後或高熱過程中在皮膚黏膜交界處所發生的急性皰疹性皮膚病（西醫單純皰疹）。",ji:"外感風溫熱毒，或肺胃積熱上蒸；反復發作者多陰虛內熱。"},
+"蛇串瘡":{def:"皮膚上出現成簇水皰、痛如火燎、纏腰而發的急性皰疹性皮膚病（西醫帶狀皰疹），又稱纏腰火丹、蛇丹。",ji:"肝經鬱熱、脾虛濕蘊，濕熱火毒蘊蒸肌膚經絡；年老體虛者氣滯血瘀致後遺神經痛。"},
+"黃水瘡":{def:"有傳染性的化膿性皮膚病，以膿皰、結痂、滲出黃水為特徵，又稱滴膿瘡（西醫膿皰瘡）。",ji:"夏秋暑濕熱毒蘊蒸肌膚；反復發作者脾虛濕滯。"},
+"濕瘡":{def:"以皮損對稱分布、多形損害、瘙癢劇烈、滲出傾向、反復發作為特徵的皮膚病（西醫濕疹）。",ji:"稟賦不耐、飲食失節，濕熱內蘊，復感風濕熱邪，浸淫肌膚；久則血虛風燥。"},
+"接觸性皮炎":{def:"皮膚黏膜接觸某些外界致敏或刺激物後，在接觸部位發生的急性或慢性炎症反應（漆瘡、馬桶瘡等）。",ji:"稟賦不耐，皮膚接觸某物毒邪，邪毒侵入肌膚，鬱而化熱，邪熱與氣血相搏。"},
+"藥毒（藥疹）":{def:"藥物經口服、注射或皮膚黏膜用藥等途徑進入人體後引起的皮膚黏膜急性炎症反應（西醫藥物性皮炎）。",ji:"稟賦不耐，藥毒內侵，致濕熱蘊膚、熱毒入營，或久病氣陰兩傷。"},
+"牛皮癬（攝領瘡）":{def:"以皮膚苔蘚樣變、劇癢為特徵的慢性皮膚病，狀如牛領之皮、厚而且堅，好發於頸項（西醫神經性皮炎）。",ji:"風濕熱阻於肌膚，或情志內傷、肝鬱化火，或血虛風燥、肌膚失養。"},
+"粉刺":{def:"以顏面、胸背等處生粉刺、丘疹、膿皰、結節為特徵的毛囊皮脂腺慢性炎症（西醫痤瘡）。",ji:"素體陽熱偏盛，肺經風熱熏蒸；或過食肥甘致腸胃濕熱；或痰濕瘀滯凝結肌膚。"},
+"癮疹":{def:"皮膚出現瘙癢性風團、發無定處、驟起驟退、退後不留痕跡的過敏性皮膚病（西醫蕁麻疹）。",ji:"稟賦不耐，風寒、風熱之邪客於肌膚；或胃腸濕熱；或氣血虧虛、血虛風燥。"},
+"內痔":{def:"發生於肛門齒線以上、直腸末端黏膜下痔靜脈叢擴大曲張所形成的柔軟靜脈團，以便血、脫出為主症。",ji:"臟腑本虛、靜脈壁薄弱，復因飲食不節、燥熱內生、久坐久立、便秘等，致濕熱下注、氣血瘀滯、筋脈橫解。"},
+"肛裂":{def:"肛管皮膚全層縱行裂開並形成感染性潰瘍，以週期性疼痛、便血、便秘為主症。",ji:"血熱腸燥、大便秘結，排便努掙撕裂肛管；或陰虛津虧，腸失濡潤。"},
+"肛漏（肛瘻）":{def:"直腸或肛管與肛周皮膚相通所形成的瘻管，由內口、瘻管、外口組成，多為肛癰潰後形成。",ji:"肛癰潰後餘毒未盡、濕熱下注；或正虛邪戀、陰液虧損，瘡口久不收斂成漏。"},
+"脫肛":{def:"直腸黏膜、肛管、直腸全層或部分乙狀結腸向下移位脫出於肛門外的疾病（西醫直腸脫垂）。",ji:"中氣不足、氣虛下陷，固攝失司；或濕熱下注大腸。"},
+"鎖肛痔（肛管直腸癌）":{def:"發生於肛管直腸的惡性腫瘤，腫塊堅硬、潰爛、肛門狹窄如鎖。",ji:"飲食不節、濕熱蘊結，氣滯血瘀、毒邪凝聚；久則氣陰兩虛。"},
+"精濁（前列腺炎）":{def:"以尿道口常有精濁（白色分泌物）溢出、伴排尿不適、會陰墜脹為特徵的生殖系炎症性疾病。",ji:"濕熱下注、敗精瘀阻精室；或氣滯血瘀，或陰虛火旺、腎陽虛損。"},
+"脫疽":{def:"發於四肢末端、嚴重時趾（指）節壞死脫落的慢性周圍血管疾病（西醫血栓閉塞性脈管炎、動脈硬化性閉塞症、糖尿病足）。",ji:"脾腎陽虛、寒濕凝滯，或氣血瘀阻、脈絡痹阻；鬱久化熱則濕熱毒盛、熱毒傷陰。"},
+"股腫（下肢深靜脈血栓）":{def:"血液在下肢深靜脈血管內凝結，以患肢腫脹、疼痛、淺靜脈怒張為主症。",ji:"產後、術後或久臥傷氣，氣血運行不暢，濕濁瘀血阻於脈絡。"},
+"腸癰":{def:"發生於腸道的癰腫，以轉移性右下腹疼痛、右下腹固定壓痛為特徵（西醫急性闌尾炎），包括大腸癰、小腸癰。",ji:"飲食不節、暴急奔走、寒溫不適等致腸道傳化失司，敗血濁氣壅遏，瘀滯化熱成癰。"},
+"燒傷":{def:"由火焰、熱液、熱蒸氣、電、化學物質等作用於人體所引起的急性損傷性疾病。",ji:"火毒灼傷皮肉，輕則傷津，重者火毒內攻臟腑、傷陰耗氣、甚則陰傷陽脫、火毒內陷。"},
+"毒蛇咬傷":{def:"被有毒蛇咬傷後，蛇毒經傷口進入人體所引起的中毒性疾病，分風毒（神經毒）、火毒（血循毒）、風火毒（混合毒）。",ji:"蛇毒（風毒、火毒）內侵，風毒犯於營衛經絡，火毒入血灼傷營血，內攻臟腑。"}
+};
+
+/* ---------- 遊戲邏輯 ---------- */
+const LAYER_DEFS=[
+  {key:"def", cls:"l-def", icon:"義", title:"定義 · 總病機"},
+  {key:"f", cls:"l-zhifa", icon:"治", title:"治法"},
+  {key:"r", cls:"l-fang",  icon:"方", title:"用方"},
+  {key:"yao", cls:"l-yao", icon:"藥", title:"藥物組成"}
+];
+const cats = ["全部", ...Array.from(new Set(DATA.map(x=>x.c)))];
+let state = { cat:"全部", order:[], idx:0, stage:0, marks:{}, reviewMode:false };
+
+function indicesForCat(cat){
+  let arr = DATA.map((x,i)=>i).filter(i=> cat==="全部" || DATA[i].c===cat);
+  if(state.reviewMode) arr = arr.filter(i=> state.marks[i]==="no");
+  return arr;
+}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+function buildCats(){
+  const wrap=document.getElementById("cats"); wrap.innerHTML="";
+  cats.forEach(c=>{
+    const b=document.createElement("button");
+    b.className="cat"+(c===state.cat?" active":"");
+    const n = c==="全部"?DATA.length:DATA.filter(x=>x.c===c).length;
+    b.textContent=`${c}·${n}`;
+    b.onclick=()=>{state.cat=c;state.reviewMode=false;startDeck();};
+    wrap.appendChild(b);
+  });
+}
+function startDeck(){
+  state.order = indicesForCat(state.cat);
+  state.idx=0; state.stage=0;
+  buildCats(); render();
+}
+function setStats(){
+  const ok=Object.values(state.marks).filter(v=>v==="ok").length;
+  const no=Object.values(state.marks).filter(v=>v==="no").length;
+  document.getElementById("s-ok").textContent=ok;
+  document.getElementById("s-no").textContent=no;
+  document.getElementById("s-pos").textContent=Math.min(state.idx+1,state.order.length);
+  document.getElementById("s-total").textContent=state.order.length;
+  const pct=state.order.length? (state.idx/state.order.length*100):0;
+  document.getElementById("bar").style.width=pct+"%";
+}
+function render(){
+  const area=document.getElementById("cardArea");
+  if(state.order.length===0){
+    area.innerHTML=`<div class="card"><div class="done"><div class="big">🎉</div><h2>冇卡喇！</h2><p class="sub">呢個分類／「要溫」清單已清空。</p></div></div>`;
+    setStats(); return;
+  }
+  if(state.idx>=state.order.length){
+    const ok=Object.values(state.marks).filter(v=>v==="ok").length;
+    area.innerHTML=`<div class="card"><div class="done">
+      <div class="big">🏆</div><h2>完成呢副牌！</h2>
+      <p class="sub">已過 ${state.order.length} 張卡 · 標記識得 ${ok} 張</p>
+      <div class="controls" style="margin-top:22px">
+        <button class="btn ok" onclick="state.idx=0;state.stage=0;render()">↺ 再嚟一次</button>
+        <button class="btn no" onclick="state.reviewMode=true;startDeck()">⚠️ 集中溫「要溫」</button>
+      </div></div></div>`;
+    setStats(); return;
+  }
+  const it=DATA[state.order[state.idx]];
+  const gi=state.order[state.idx];
+  let layersHTML="";
+  LAYER_DEFS.forEach((L,li)=>{
+    const open = state.stage>li;
+    const locked = state.stage<li;
+    let val="";
+    if(L.key==="def"){
+      const D=DEFS[it.d]||{def:"—",ji:"—"};
+      val=`<div class="deftxt"><b>定義：</b>${D.def}</div><div class="ji"><b>總病機：</b>${D.ji}</div>`;
+    }
+    if(L.key==="f") val=`<div class="val">${it.f}</div>`;
+    if(L.key==="r") val=`<div class="val">${it.r}</div>`;
+    if(L.key==="yao") val=`<div class="compose">${it.m}</div>`;
+    layersHTML+=`<div class="layer ${L.cls} ${open?'open':''} ${locked?'locked':''}" data-li="${li}">
+      <div class="lh"><span class="ico">${open?'✓':L.icon}</span>${L.title}${locked?' <span style="margin-left:auto;font-size:11px">🔒</span>':''}</div>
+      <div class="body">${val}</div></div>`;
+  });
+  const fullyRevealed = state.stage>=LAYER_DEFS.length;
+  area.innerHTML=`
+    <div class="card" id="theCard">
+      <span class="badge">${it.c}</span>
+      <div class="disease">${it.d}</div>
+      <div class="zheng">${it.z}</div>
+      <div class="layers">${layersHTML}</div>
+      ${!fullyRevealed?`<div class="tap-hint">👆 撳卡／撳掣 逐層揭開</div>`:``}
+    </div>
+    <div class="controls">
+      ${!fullyRevealed
+        ? `<button class="btn reveal" id="revealBtn">揭開：${LAYER_DEFS[state.stage].title} ▾</button>`
+        : `<button class="btn no" id="markNo">⚠️ 要再溫</button>
+           <button class="btn ok" id="markOk">✓ 識得</button>`}
+    </div>
+    <div class="nav">
+      <button class="btn" onclick="prevCard()">◀ 上一張</button>
+      <button class="btn" onclick="nextCard()">下一張 ▶</button>
+    </div>`;
+
+  const card=document.getElementById("theCard");
+  card.onclick=(e)=>{ if(e.target.closest('.layer')) return; if(state.stage<LAYER_DEFS.length){state.stage++;render();} };
+  card.querySelectorAll('.layer').forEach(el=>{
+    el.querySelector('.lh').onclick=(ev)=>{ev.stopPropagation();
+      const li=+el.dataset.li;
+      if(li===state.stage){state.stage++;render();}
+    };
+  });
+  const rb=document.getElementById("revealBtn"); if(rb) rb.onclick=()=>{state.stage++;render();};
+  const mo=document.getElementById("markOk"); if(mo) mo.onclick=()=>{state.marks[gi]="ok";nextCard();};
+  const mn=document.getElementById("markNo"); if(mn) mn.onclick=()=>{state.marks[gi]="no";nextCard();};
+  setStats();
+}
+function nextCard(){ state.idx++; state.stage=0; render(); }
+function prevCard(){ if(state.idx>0){state.idx--; state.stage=0; render();} }
+
+document.getElementById("t-shuffle").onclick=()=>{shuffle(state.order);state.idx=0;state.stage=0;render();};
+document.getElementById("t-review").onclick=()=>{
+  const noCount=Object.values(state.marks).filter(v=>v==="no").length;
+  if(noCount===0){alert("仲未標記過「要再溫」嘅卡 😊");return;}
+  state.reviewMode=true; startDeck();
+};
+document.getElementById("t-reset").onclick=()=>{
+  if(confirm("重新開始？會清除「識得／要溫」標記。")){state.marks={};state.reviewMode=false;startDeck();}
+};
+document.addEventListener("keydown",e=>{
+  if(e.key==="ArrowRight"||e.key===" "){
+    if(state.stage<LAYER_DEFS.length){state.stage++;render();}else nextCard(); e.preventDefault();
+  }else if(e.key==="ArrowLeft"){prevCard();}
+});
+
+buildCats(); startDeck();
+</script>
+</body>
+</html>

@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>兒科證型方藥記憶卡 · 執業試溫習遊戲</title>
+<style>
+  :root{
+    --bg:#0f1419; --panel:#1a2230; --panel2:#222d40; --line:#2e3b52;
+    --txt:#e7eef7; --muted:#94a3b8; --accent:#ff7a59; --accent2:#5ec1a8;
+    --gold:#f5c451; --blue:#5aa9e6; --purple:#b794f6; --red:#f06a6a;
+    --shadow:0 10px 30px rgba(0,0,0,.45);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{margin:0;font-family:"PingFang TC","Microsoft JhengHei","Noto Sans TC",system-ui,sans-serif;
+    background:radial-gradient(1200px 600px at 50% -10%,#1c2737,#0f1419 60%);color:var(--txt);min-height:100vh}
+  .wrap{max-width:760px;margin:0 auto;padding:16px 14px 60px}
+  header{text-align:center;padding:8px 0 4px}
+  h1{font-size:22px;margin:0;letter-spacing:1px}
+  .sub{color:var(--muted);font-size:13px;margin-top:4px}
+
+  .stats{display:flex;gap:8px;justify-content:center;margin:14px 0 6px;flex-wrap:wrap}
+  .chip{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:6px 12px;font-size:13px;color:var(--muted)}
+  .chip b{color:var(--gold);font-size:15px}
+  .chip.ok b{color:var(--accent2)} .chip.no b{color:var(--red)}
+
+  .cats{display:flex;gap:6px;overflow-x:auto;padding:10px 2px;margin-bottom:6px;scrollbar-width:none}
+  .cats::-webkit-scrollbar{display:none}
+  .cat{flex:0 0 auto;background:var(--panel);border:1px solid var(--line);color:var(--muted);
+    border-radius:18px;padding:7px 14px;font-size:14px;cursor:pointer;white-space:nowrap;transition:.15s}
+  .cat.active{background:linear-gradient(135deg,var(--accent),#ff9a76);color:#1a1209;border-color:transparent;font-weight:700}
+
+  .progress{height:6px;background:var(--panel);border-radius:6px;overflow:hidden;margin:6px 2px 14px}
+  .progress > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent2),var(--blue));width:0;transition:.3s}
+
+  .card{background:linear-gradient(160deg,var(--panel),var(--panel2));border:1px solid var(--line);
+    border-radius:22px;box-shadow:var(--shadow);padding:22px 20px;min-height:380px;
+    display:flex;flex-direction:column;position:relative;overflow:hidden}
+  .card::before{content:"";position:absolute;inset:0;background:radial-gradient(400px 200px at 80% 0%,rgba(255,122,89,.08),transparent 60%);pointer-events:none}
+  .badge{align-self:flex-start;font-size:12px;color:var(--muted);background:#0e1622;border:1px solid var(--line);
+    border-radius:14px;padding:4px 10px;margin-bottom:4px}
+  .disease{font-size:30px;font-weight:800;letter-spacing:1px;margin:6px 0 2px}
+  .zheng{font-size:20px;color:var(--gold);font-weight:700;margin-bottom:2px}
+  .layers{margin-top:14px;display:flex;flex-direction:column;gap:12px;flex:1}
+
+  .layer{border-radius:14px;border:1px dashed var(--line);background:#0e1622aa;overflow:hidden;transition:.2s}
+  .layer .lh{display:flex;align-items:center;gap:8px;padding:11px 14px;font-size:13px;color:var(--muted);cursor:pointer}
+  .layer .lh .ico{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700;
+    background:var(--panel);border:1px solid var(--line);color:var(--muted)}
+  .layer .body{padding:0 14px;max-height:0;opacity:0;transition:max-height .35s ease,opacity .25s,padding .25s}
+  .layer.open{border-style:solid}
+  .layer.open .body{max-height:400px;opacity:1;padding:0 14px 14px}
+  .layer.open .lh{color:var(--txt)}
+  .layer.open .ico{background:var(--accent2);border-color:transparent;color:#06231b}
+  .layer.locked{opacity:.45}
+  .layer.locked .lh{cursor:not-allowed}
+
+  .l-def.open{box-shadow:inset 0 0 0 1px var(--purple)}
+  .l-def .deftxt{font-size:15px;line-height:1.75}
+  .l-def .deftxt b{color:var(--purple)}
+  .l-def .ji{margin-top:8px;font-size:15px;line-height:1.75}
+  .l-def .ji b{color:var(--accent2)}
+  .l-zhifa.open{box-shadow:inset 0 0 0 1px var(--blue)}
+  .l-zhifa .val{font-size:19px;color:var(--blue);font-weight:700}
+  .l-fang.open{box-shadow:inset 0 0 0 1px var(--accent)}
+  .l-fang .val{font-size:24px;color:var(--accent);font-weight:800;letter-spacing:1px}
+  .l-yao .compose{font-size:16px;line-height:1.7}
+
+  .tap-hint{text-align:center;color:var(--muted);font-size:13px;margin-top:8px;animation:blink 1.6s infinite}
+  @keyframes blink{0%,100%{opacity:.4}50%{opacity:1}}
+
+  .controls{display:flex;gap:10px;margin-top:16px}
+  .btn{flex:1;border:none;border-radius:14px;padding:14px;font-size:16px;font-weight:700;cursor:pointer;transition:.15s;font-family:inherit}
+  .btn:active{transform:scale(.97)}
+  .btn.reveal{background:linear-gradient(135deg,var(--accent),#ff9a76);color:#1a1209}
+  .btn.no{background:#3a2330;color:var(--red);border:1px solid #5a2f3f}
+  .btn.ok{background:#1f3a32;color:var(--accent2);border:1px solid #2f5a4d}
+  .nav{display:flex;gap:10px;margin-top:10px}
+  .nav .btn{background:var(--panel);color:var(--muted);border:1px solid var(--line);font-size:14px;padding:11px}
+
+  .toolbar{display:flex;gap:8px;justify-content:center;margin-top:18px;flex-wrap:wrap}
+  .tool{background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:12px;
+    padding:8px 14px;font-size:13px;cursor:pointer;font-family:inherit}
+  .tool:active{background:var(--panel)}
+
+  .done{text-align:center;padding:40px 20px}
+  .done .big{font-size:46px;margin-bottom:8px}
+  .done h2{margin:6px 0}
+  footer{text-align:center;color:#5b6677;font-size:11px;margin-top:24px;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>兒科證型方藥 · 記憶卡</h1>
+    <div class="sub">香港中醫執業試溫習 · 依兒科Enotes（五／七版）· 逐層翻牌</div>
+  </header>
+
+  <div class="stats">
+    <span class="chip">進度 <b id="s-pos">0</b>/<span id="s-total">0</span></span>
+    <span class="chip ok">識得 <b id="s-ok">0</b></span>
+    <span class="chip no">要溫 <b id="s-no">0</b></span>
+  </div>
+
+  <div class="cats" id="cats"></div>
+  <div class="progress"><i id="bar"></i></div>
+
+  <div id="cardArea"></div>
+
+  <div class="toolbar">
+    <button class="tool" id="t-shuffle">🔀 隨機洗牌</button>
+    <button class="tool" id="t-review">⚠️ 只溫「要溫」</button>
+    <button class="tool" id="t-reset">↺ 重新開始</button>
+  </div>
+
+  <footer>
+    內容依《中醫兒科學》教材及兒科Enotes整理。<br>
+    臨證以教材原文為準；如有疑問請核對課本。祝 Alex 考試順利 🌿
+  </footer>
+</div>
+
+<script>
+/* ---------- 數據：每張卡 = 一個病的一個證型 ---------- */
+const DATA = [
+/* ===== 肺系病證 ===== */
+{c:"肺系",d:"感冒",z:"風寒感冒",f:"辛溫解表",r:"荊防敗毒散（輕證：蔥豉湯）",
+ m:"荊芥、防風、羌活、獨活、柴胡、前胡、川芎、枳殼、桔梗、茯苓、甘草"},
+{c:"肺系",d:"感冒",z:"風熱感冒",f:"辛涼解表",r:"銀翹散（咳嗽明顯：桑菊飲）",
+ m:"金銀花、連翹、桔梗、薄荷、竹葉、生甘草、荊芥穗、淡豆豉、牛蒡子、蘆根"},
+{c:"肺系",d:"感冒",z:"暑邪感冒",f:"清暑解表",r:"新加香薷飲",
+ m:"香薷、金銀花、鮮扁豆花、厚朴、連翹"},
+{c:"肺系",d:"感冒",z:"兼證·挾痰",f:"風寒：辛溫宣肺化痰；風熱：清肺化痰",r:"風寒：三拗湯／二陳湯；風熱：桑菊飲加味",
+ m:"麻黃、杏仁、甘草／半夏、陳皮、茯苓、甘草"},
+{c:"肺系",d:"感冒",z:"兼證·挾滯",f:"解表兼消食導滯",r:"解表方加消導之品（保和丸）",
+ m:"山楂、神麴、半夏、茯苓、陳皮、連翹、萊菔子"},
+{c:"肺系",d:"感冒",z:"兼證·挾驚",f:"清熱解表，佐以鎮驚安神",r:"解表方加蟬蛻、鉤藤（或加服琥珀抱龍丸）",
+ m:"蟬蛻、鉤藤、僵蠶等熄風鎮驚之品"},
+
+{c:"肺系",d:"咳嗽",z:"外感·風寒咳嗽",f:"散寒宣肺",r:"金沸草散",
+ m:"旋覆花（金沸草）、前胡、細辛、荊芥、半夏、茯苓、甘草、生薑、大棗"},
+{c:"肺系",d:"咳嗽",z:"外感·風熱咳嗽",f:"疏風肅肺",r:"桑菊飲",
+ m:"桑葉、菊花、杏仁、連翹、薄荷、桔梗、甘草、蘆根"},
+{c:"肺系",d:"咳嗽",z:"內傷·痰熱咳嗽",f:"清肺化痰",r:"清寧散",
+ m:"桑白皮、葶藶子、赤茯苓、車前子、甘草"},
+{c:"肺系",d:"咳嗽",z:"內傷·痰濕咳嗽",f:"化痰燥濕",r:"二陳湯",
+ m:"半夏、陳皮、茯苓、甘草（生薑、烏梅）"},
+{c:"肺系",d:"咳嗽",z:"內傷·陰虛燥咳",f:"滋陰潤燥",r:"沙參麥冬湯",
+ m:"沙參、麥冬、玉竹、天花粉、白扁豆、桑葉、甘草"},
+{c:"肺系",d:"咳嗽",z:"內傷·肺脾氣虛",f:"健脾益氣（補肺）",r:"六君子湯",
+ m:"人參、白朮、茯苓、甘草、陳皮、半夏"},
+
+{c:"肺系",d:"肺炎喘嗽",z:"常證·風寒閉肺",f:"辛溫開肺",r:"三拗湯合蔥豉湯（或華蓋散）",
+ m:"麻黃、杏仁、甘草＋蔥白、淡豆豉"},
+{c:"肺系",d:"肺炎喘嗽",z:"常證·風熱閉肺",f:"輕證：辛涼輕劑宣肺化痰；重證：辛涼重劑",r:"輕證：銀翹散；重證：麻杏石甘湯",
+ m:"麻黃、杏仁、石膏、甘草"},
+{c:"肺系",d:"肺炎喘嗽",z:"常證·痰熱閉肺",f:"清熱宣肺，滌痰定喘",r:"五虎湯合葶藶大棗瀉肺湯",
+ m:"麻黃、杏仁、石膏、甘草、細茶＋葶藶子、大棗"},
+{c:"肺系",d:"肺炎喘嗽",z:"正虛邪戀·陰虛肺熱",f:"養陰清肺",r:"沙參麥冬湯",
+ m:"沙參、麥冬、玉竹、天花粉、白扁豆、桑葉、甘草"},
+{c:"肺系",d:"肺炎喘嗽",z:"正虛邪戀·肺脾氣虛",f:"益氣健脾",r:"人參五味子湯",
+ m:"人參、五味子、白朮、茯苓、麥冬、甘草、生薑、大棗"},
+{c:"肺系",d:"肺炎喘嗽",z:"變證·心陽虛衰",f:"溫補心陽，救逆固脫",r:"參附龍牡救逆湯",
+ m:"人參、附子、龍骨、牡蠣、白芍、炙甘草"},
+{c:"肺系",d:"肺炎喘嗽",z:"變證·邪陷厥陰（內陷心肝）",f:"平肝熄風，清心開竅",r:"羚角鉤藤湯合牛黃清心丸",
+ m:"羚羊角、鉤藤、桑葉、菊花、生地、白芍、川貝、竹茹、茯神、甘草"},
+
+{c:"肺系",d:"哮喘",z:"發作期·熱性哮喘",f:"清肺化痰定喘",r:"麻杏石甘湯合蘇葶丸",
+ m:"麻黃、杏仁、石膏、甘草＋蘇子、葶藶子"},
+{c:"肺系",d:"哮喘",z:"發作期·寒性哮喘",f:"溫肺化痰定喘",r:"小青龍湯合三子養親湯",
+ m:"麻黃、桂枝、白芍、乾薑、細辛、半夏、五味子、甘草＋蘇子、白芥子、萊菔子"},
+{c:"肺系",d:"哮喘",z:"緩解期·肺氣虛弱",f:"補肺固衛",r:"玉屏風散",
+ m:"黃芪、白朮、防風"},
+{c:"肺系",d:"哮喘",z:"緩解期·脾虛氣弱",f:"健脾化痰",r:"六君子湯",
+ m:"人參、白朮、茯苓、甘草、陳皮、半夏"},
+{c:"肺系",d:"哮喘",z:"緩解期·腎虛不納",f:"補腎固本",r:"金匱腎氣丸（腎陰不足：六味地黃丸）",
+ m:"附子、桂枝、熟地、山藥、山茱萸、茯苓、丹皮、澤瀉"},
+
+/* ===== 脾胃病證 ===== */
+{c:"脾胃",d:"鵝口瘡",z:"心脾積熱",f:"清泄心脾積熱",r:"清熱瀉脾散",
+ m:"黃連、黃芩、梔子、石膏、生地、赤茯苓、燈心草"},
+{c:"脾胃",d:"鵝口瘡",z:"虛火上浮",f:"滋陰潛陽，引火歸元",r:"六味地黃丸加肉桂",
+ m:"熟地、山藥、山茱萸、茯苓、丹皮、澤瀉＋肉桂"},
+
+{c:"脾胃",d:"口瘡",z:"脾胃積熱",f:"清熱解毒，通腑瀉火",r:"涼膈散",
+ m:"連翹、黃芩、梔子、大黃、芒硝、薄荷、甘草、竹葉"},
+{c:"脾胃",d:"口瘡",z:"心火上炎",f:"清心泄熱",r:"瀉心導赤湯",
+ m:"黃連、生地、木通、甘草梢、竹葉"},
+{c:"脾胃",d:"口瘡",z:"虛火上浮",f:"滋陰降火",r:"六味地黃丸",
+ m:"熟地、山藥、山茱萸、茯苓、丹皮、澤瀉"},
+
+{c:"脾胃",d:"嘔吐",z:"傷食吐",f:"和胃導滯",r:"消乳丸",
+ m:"香附、神麴、麥芽、陳皮、砂仁、甘草"},
+{c:"脾胃",d:"嘔吐",z:"胃熱吐",f:"清熱和胃",r:"加味溫膽湯",
+ m:"半夏、竹茹、枳實、陳皮、茯苓、甘草、黃連"},
+{c:"脾胃",d:"嘔吐",z:"胃寒吐",f:"溫中散寒",r:"丁萸理中湯",
+ m:"丁香、吳茱萸、人參、白朮、乾薑、甘草"},
+{c:"脾胃",d:"嘔吐",z:"肝氣犯胃",f:"疏肝理氣",r:"解肝煎",
+ m:"陳皮、半夏、厚朴、茯苓、蘇葉、白芍、砂仁、生薑"},
+{c:"脾胃",d:"嘔吐",z:"驚恐吐",f:"鎮驚止嘔",r:"定吐丸",
+ m:"丁香、蝎尾、半夏（薑製）"},
+
+{c:"脾胃",d:"泄瀉",z:"常證·傷食瀉",f:"消食化滯",r:"保和丸",
+ m:"山楂、神麴、半夏、茯苓、陳皮、連翹、萊菔子"},
+{c:"脾胃",d:"泄瀉",z:"常證·風寒瀉",f:"疏風散寒（化濕）",r:"藿香正氣散",
+ m:"藿香、紫蘇、白芷、大腹皮、桔梗、白朮、厚朴、半夏麴、陳皮、茯苓、甘草、生薑、大棗"},
+{c:"脾胃",d:"泄瀉",z:"常證·濕熱瀉",f:"清熱利濕",r:"葛根黃芩黃連湯",
+ m:"葛根、黃芩、黃連、甘草"},
+{c:"脾胃",d:"泄瀉",z:"常證·脾虛瀉",f:"健脾益氣",r:"參苓白朮散",
+ m:"人參、白朮、茯苓、甘草、山藥、蓮子、白扁豆、薏苡仁、砂仁、桔梗"},
+{c:"脾胃",d:"泄瀉",z:"常證·脾腎陽虛瀉",f:"補脾溫腎",r:"附子理中湯",
+ m:"附子、人參、白朮、乾薑、甘草"},
+{c:"脾胃",d:"泄瀉",z:"變證·傷陰（氣陰兩傷）",f:"酸甘斂陰",r:"連梅湯",
+ m:"黃連、烏梅、麥冬、生地、阿膠"},
+{c:"脾胃",d:"泄瀉",z:"變證·傷陽（陰竭陽脫）",f:"溫陽救逆",r:"參附龍牡湯",
+ m:"人參、附子、龍骨、牡蠣"},
+
+{c:"脾胃",d:"腹痛",z:"腹部中寒",f:"溫中袪寒",r:"養臟散",
+ m:"木香、丁香、沉香、當歸、川芎、肉桂"},
+{c:"脾胃",d:"腹痛",z:"乳食積滯",f:"消食導滯",r:"香砂平胃散",
+ m:"蒼朮、厚朴、陳皮、甘草、木香、砂仁"},
+{c:"脾胃",d:"腹痛",z:"氣滯血瘀",f:"理氣化瘀",r:"少腹逐瘀湯",
+ m:"小茴香、乾薑、延胡索、沒藥、當歸、川芎、官桂、赤芍、蒲黃、五靈脂"},
+{c:"脾胃",d:"腹痛",z:"臟腑虛冷",f:"溫中補虛",r:"小建中湯合理中湯",
+ m:"桂枝、白芍、炙甘草、生薑、大棗、飴糖＋人參、白朮、乾薑"},
+
+{c:"脾胃",d:"厭食",z:"脾運失健",f:"和脾助運",r:"曲麥枳朮丸",
+ m:"枳實、白朮、神麴、麥芽"},
+{c:"脾胃",d:"厭食",z:"胃陰不足",f:"益胃育陰（養胃增液）",r:"養胃增液湯",
+ m:"玉竹、石斛、沙參、白芍、甘草、烏梅"},
+{c:"脾胃",d:"厭食",z:"脾胃氣虛",f:"健脾益氣",r:"參苓白朮散",
+ m:"人參、白朮、茯苓、甘草、山藥、蓮子、白扁豆、薏苡仁、砂仁、桔梗"},
+
+{c:"脾胃",d:"積滯",z:"乳食內積",f:"消乳消食，導滯和中",r:"乳積：消乳丸；食積：保和丸",
+ m:"消乳丸：香附、神麴、麥芽、陳皮、砂仁、甘草"},
+{c:"脾胃",d:"積滯",z:"脾虛夾積",f:"健脾助運，消補兼施",r:"健脾丸",
+ m:"人參、白朮、陳皮、麥芽、山楂、枳實"},
+
+{c:"脾胃",d:"疳證",z:"疳氣",f:"和脾健運",r:"資生健脾丸",
+ m:"人參、白朮、茯苓、甘草、山藥、薏苡仁、白扁豆、蓮子、山楂、神麴、麥芽、砂仁、藿香、黃連、澤瀉、桔梗"},
+{c:"脾胃",d:"疳證",z:"疳積",f:"消積理脾",r:"疳積散",
+ m:"五穀蟲、雞內金、香附、砂仁、莪朮、三棱、青皮、陳皮、蘆薈、胡黃連、使君子"},
+{c:"脾胃",d:"疳證",z:"乾疳",f:"補益氣血",r:"八珍湯",
+ m:"人參、白朮、茯苓、甘草、當歸、川芎、白芍、熟地"},
+{c:"脾胃",d:"疳證",z:"兼證·眼疳",f:"養肝明目",r:"石斛夜光丸（或羊肝丸）",
+ m:"石斛、天冬、麥冬、生地、熟地、人參、茯苓、菊花、決明子、枸杞、菟絲子等"},
+{c:"脾胃",d:"疳證",z:"兼證·心疳（口疳）",f:"清心瀉火，佐以養陰",r:"瀉心導赤散",
+ m:"黃連、生地、木通、甘草梢、竹葉"},
+{c:"脾胃",d:"疳證",z:"兼證·疳腫脹",f:"溫陽利水",r:"五苓散合五皮飲",
+ m:"豬苓、澤瀉、白朮、茯苓、桂枝＋桑白皮、陳皮、生薑皮、大腹皮、茯苓皮"},
+{c:"脾胃",d:"疳證",z:"變證·脫證",f:"救逆固脫",r:"生脈散、參附龍牡救逆湯",
+ m:"人參、麥冬、五味子／人參、附子、龍骨、牡蠣、白芍、炙甘草"},
+
+/* ===== 心肝病證 ===== */
+{c:"心肝",d:"急驚風",z:"感受風邪（風熱動風）",f:"疏風清熱，熄風鎮驚",r:"銀翹散加鉤藤、僵蠶、菊花、石決明",
+ m:"金銀花、連翹、桔梗、薄荷、竹葉、甘草、荊芥穗、淡豆豉、牛蒡子、蘆根"},
+{c:"心肝",d:"急驚風",z:"感受暑邪（暑熱熾盛）",f:"袪暑清熱，開竅鎮驚",r:"清瘟敗毒飲",
+ m:"石膏、生地、犀角（水牛角代）、黃連、梔子、桔梗、黃芩、知母、赤芍、玄參、連翹、甘草、丹皮、竹葉"},
+{c:"心肝",d:"急驚風",z:"感受疫邪·氣營兩燔",f:"清熱解毒，涼血熄風",r:"白虎湯合紫雪丹",
+ m:"石膏、知母、甘草、粳米"},
+{c:"心肝",d:"急驚風",z:"感受疫邪·濕熱疫毒",f:"清熱化濕（解毒熄風）",r:"黃連解毒湯",
+ m:"黃連、黃芩、黃柏、梔子"},
+{c:"心肝",d:"急驚風",z:"痰食驚風",f:"消食導滯，滌痰鎮驚",r:"玉樞丹合保和丸",
+ m:"山慈菇、續隨子、大戟、麝香、雄黃、硃砂＋山楂、神麴、半夏、茯苓、陳皮、連翹、萊菔子"},
+{c:"心肝",d:"急驚風",z:"驚恐驚風",f:"鎮驚安神",r:"抱龍丸（或安神丸）",
+ m:"天竺黃、雄黃、辰砂、麝香、膽南星"},
+{c:"心肝",d:"急驚風",z:"變證·厥脫",f:"溫補脾腎，回陽救逆",r:"參附湯（或附子理中湯）",
+ m:"人參、附子"},
+
+{c:"心肝",d:"慢驚風",z:"土虛木亢（脾虛肝旺）",f:"溫運脾陽，扶土抑木",r:"緩肝理脾湯加鉤藤",
+ m:"人參、白朮、茯苓、甘草、山藥、白扁豆、陳皮、桂枝、白芍、生薑、大棗"},
+{c:"心肝",d:"慢驚風",z:"脾腎陽衰",f:"溫補脾腎（回陽救逆）",r:"固真湯（或逐寒蕩驚湯）",
+ m:"人參、白朮、茯苓、甘草、黃芪、山藥、肉桂、附子"},
+{c:"心肝",d:"慢驚風",z:"陰虛風動",f:"育陰潛陽，滋水涵木",r:"大定風珠（或黃連阿膠湯、三甲復脈湯）",
+ m:"白芍、阿膠、龜板、生地、麻仁、五味子、牡蠣、麥冬、炙甘草、雞子黃、鱉甲"},
+
+/* ===== 腎系病證 ===== */
+{c:"腎系",d:"水腫",z:"常證·風水相搏",f:"疏風利水",r:"麻黃連翹赤小豆湯",
+ m:"麻黃、連翹、赤小豆、杏仁、桑白皮、甘草、生薑、大棗"},
+{c:"腎系",d:"水腫",z:"常證·濕熱下注（濕熱內侵）",f:"清熱利濕",r:"三妙丸合導赤散",
+ m:"蒼朮、黃柏、牛膝＋生地、木通、竹葉、甘草梢"},
+{c:"腎系",d:"水腫",z:"常證·肺脾氣虛",f:"健脾益氣（佐以固表）",r:"參苓白朮散合玉屏風散",
+ m:"人參、白朮、茯苓、甘草、山藥、蓮子、白扁豆、薏苡仁、砂仁、桔梗＋黃芪、防風"},
+{c:"腎系",d:"水腫",z:"常證·脾腎兩虛（陽虛）",f:"溫腎健脾（化氣行水）",r:"真武湯（或濟生腎氣丸）",
+ m:"附子、白朮、茯苓、白芍、生薑"},
+{c:"腎系",d:"水腫",z:"變證·水氣上凌心肺",f:"瀉肺逐水（溫陽扶正）",r:"己椒藶黃丸合參附湯",
+ m:"防己、椒目、葶藶子、大黃＋人參、附子"},
+{c:"腎系",d:"水腫",z:"變證·邪陷心肝",f:"平肝潛陽，瀉火泄熱",r:"龍膽瀉肝湯",
+ m:"龍膽草、黃芩、梔子、澤瀉、木通、車前子、當歸、生地、柴胡、甘草"},
+{c:"腎系",d:"水腫",z:"變證·水毒內閉",f:"辛開苦降，辟穢解毒",r:"溫膽湯合附子瀉心湯",
+ m:"半夏、竹茹、枳實、陳皮、茯苓、甘草、生薑、大棗＋附子、大黃、黃連、黃芩"},
+
+{c:"腎系",d:"尿頻",z:"濕熱下注",f:"清熱利濕",r:"八正散",
+ m:"木通、車前子、萹蓄、瞿麥、滑石、甘草梢、大黃、梔子（燈心）"},
+{c:"腎系",d:"尿頻",z:"脾腎氣虛",f:"益氣補腎",r:"縮泉丸（腎陽虛為主：濟生腎氣丸）",
+ m:"烏藥、益智仁、山藥"},
+
+{c:"腎系",d:"遺尿",z:"下元虛寒（腎氣不足）",f:"溫補腎陽，固澀小便",r:"菟絲子散（或縮泉丸）",
+ m:"菟絲子、肉蓯蓉、附子、五味子、牡蠣、雞內金"},
+{c:"腎系",d:"遺尿",z:"脾肺氣虛",f:"培元益氣，佐以固澀",r:"補中益氣湯合縮泉丸",
+ m:"黃芪、人參、白朮、炙甘草、當歸、陳皮、升麻、柴胡＋烏藥、益智仁、山藥"},
+{c:"腎系",d:"遺尿",z:"肝經濕熱",f:"瀉肝清熱",r:"龍膽瀉肝湯",
+ m:"龍膽草、黃芩、梔子、澤瀉、木通、車前子、當歸、生地、柴胡、甘草"},
+
+/* ===== 時行疾病 ===== */
+{c:"時行疾病",d:"麻疹",z:"順證·初熱期（疹前期）",f:"辛涼透表，清宣肺衛",r:"宣毒發表湯",
+ m:"升麻、葛根、前胡、桔梗、枳殼、荊芥、防風、薄荷、木通、連翹、牛蒡子、竹葉、甘草"},
+{c:"時行疾病",d:"麻疹",z:"順證·見形期（出疹期）",f:"清熱解毒，佐以透發",r:"清解透表湯",
+ m:"西河柳、蟬蛻、葛根、升麻、紫草、桑葉、菊花、金銀花、連翹、牛蒡子、甘草"},
+{c:"時行疾病",d:"麻疹",z:"順證·恢復期（收沒期）",f:"養陰益氣，清解餘邪",r:"沙參麥冬湯",
+ m:"沙參、麥冬、玉竹、天花粉、白扁豆、桑葉、甘草"},
+{c:"時行疾病",d:"麻疹",z:"逆證·麻毒閉肺",f:"宣肺開閉，清熱解毒",r:"麻杏石甘湯",
+ m:"麻黃、杏仁、石膏、甘草"},
+{c:"時行疾病",d:"麻疹",z:"逆證·熱毒攻喉",f:"清熱解毒，利咽消腫",r:"清咽下痰湯（另服六神丸）",
+ m:"玄參、桔梗、甘草、牛蒡子、貝母、瓜蔞、射干、荊芥、馬兜鈴"},
+{c:"時行疾病",d:"麻疹",z:"逆證·邪陷心肝",f:"平肝熄風，清營解毒",r:"羚角鉤藤湯（加服安宮牛黃丸／牛黃清心丸）",
+ m:"羚羊角、鉤藤、桑葉、菊花、生地、白芍、川貝、竹茹、茯神、甘草"},
+
+{c:"時行疾病",d:"風痧",z:"邪鬱肺衛",f:"疏風清熱（透疹）",r:"銀翹散",
+ m:"金銀花、連翹、桔梗、薄荷、竹葉、生甘草、荊芥穗、淡豆豉、牛蒡子、蘆根"},
+{c:"時行疾病",d:"風痧",z:"邪熱熾盛（邪入氣營）",f:"清熱解毒（涼營透疹）",r:"透疹涼解湯",
+ m:"桑葉、菊花、薄荷、連翹、牛蒡子、赤芍、蟬蛻、紫花地丁、黃連、紫草"},
+
+{c:"時行疾病",d:"丹痧",z:"邪侵肺衛",f:"辛涼宣透，清熱利咽",r:"解肌透痧湯",
+ m:"葛根、蟬蛻、浮萍、牛蒡子、荊芥、射干、桔梗、馬勃、連翹、僵蠶、竹茹、甘草"},
+{c:"時行疾病",d:"丹痧",z:"毒在氣營",f:"清氣涼營，瀉火解毒",r:"涼營清氣湯",
+ m:"犀角（水牛角代）、石斛、梔子、丹皮、赤芍、玄參、薄荷、黃連、石膏、連翹、生地、蘆根、竹葉、甘草"},
+{c:"時行疾病",d:"丹痧",z:"疹後陰傷",f:"養陰生津，清熱潤喉",r:"沙參麥冬湯",
+ m:"沙參、麥冬、玉竹、天花粉、白扁豆、桑葉、甘草"},
+
+{c:"時行疾病",d:"水痘",z:"風熱輕證（邪傷肺衛）",f:"疏風清熱解毒（利濕）",r:"銀翹散",
+ m:"金銀花、連翹、桔梗、薄荷、竹葉、生甘草、荊芥穗、淡豆豉、牛蒡子、蘆根"},
+{c:"時行疾病",d:"水痘",z:"毒熱重證（邪熾氣營）",f:"清熱涼營解毒（滲濕）",r:"清胃解毒湯",
+ m:"升麻、黃連、黃芩、石膏、丹皮、生地"},
+
+{c:"時行疾病",d:"痄腮",z:"常證·溫毒在表（邪犯少陽）",f:"疏風清熱，散結消腫",r:"銀翹散",
+ m:"金銀花、連翹、桔梗、薄荷、竹葉、生甘草、荊芥穗、淡豆豉、牛蒡子、蘆根"},
+{c:"時行疾病",d:"痄腮",z:"常證·熱毒蘊結",f:"清熱解毒，軟堅散結",r:"普濟消毒飲",
+ m:"黃芩、黃連、陳皮、甘草、玄參、柴胡、桔梗、連翹、板藍根、馬勃、牛蒡子、薄荷、僵蠶、升麻"},
+{c:"時行疾病",d:"痄腮",z:"變證·邪毒引睪竄腹",f:"清瀉肝火（活絡散結止痛）",r:"龍膽瀉肝湯加減",
+ m:"龍膽草、黃芩、梔子、澤瀉、木通、車前子、當歸、生地、柴胡、甘草"},
+
+{c:"時行疾病",d:"頓咳",z:"初咳期",f:"疏風宣肺（化痰止咳）",r:"風熱：桑菊飲；風寒：杏蘇散；寒邪偏重：華蓋散",
+ m:"桑葉、菊花、杏仁、連翹、薄荷、桔梗、甘草、蘆根"},
+{c:"時行疾病",d:"頓咳",z:"痙咳期",f:"瀉肺鎮咳（滌痰降逆）",r:"桑白皮湯",
+ m:"桑白皮、半夏、蘇子、杏仁、貝母、黃芩、黃連、梔子"},
+{c:"時行疾病",d:"頓咳",z:"恢復期",f:"潤肺養陰／益氣健脾",r:"肺陰耗傷：沙參麥冬湯；肺脾氣虛：人參五味子湯",
+ m:"沙參、麥冬、玉竹、天花粉、白扁豆、桑葉、甘草"},
+
+{c:"時行疾病",d:"小兒暑溫",z:"邪在衛氣",f:"清暑透表（清熱解毒）",r:"暑邪在表：新加香薷飲；偏在裏：白虎湯",
+ m:"香薷、金銀花、鮮扁豆花、厚朴、連翹／石膏、知母、甘草、粳米"},
+{c:"時行疾病",d:"小兒暑溫",z:"邪在氣營",f:"清氣涼營（解毒）",r:"清瘟敗毒飲",
+ m:"石膏、生地、犀角（水牛角代）、黃連、梔子、桔梗、黃芩、知母、赤芍、玄參、連翹、甘草、丹皮、竹葉"},
+{c:"時行疾病",d:"小兒暑溫",z:"邪在營血",f:"涼血清心（開竅熄風）",r:"犀角地黃湯合增液湯（兼用安宮牛黃丸）",
+ m:"犀角（水牛角代）、生地、白芍、丹皮＋玄參、麥冬、生地"},
+
+{c:"時行疾病",d:"疫毒痢",z:"毒邪內閉",f:"清腸解毒，泄熱開竅",r:"黃連解毒湯加白頭翁、秦皮",
+ m:"黃連、黃芩、黃柏、梔子＋白頭翁、秦皮"},
+{c:"時行疾病",d:"疫毒痢",z:"內閉外脫",f:"扶正固脫（回陽救逆）",r:"參附湯（或參附龍牡救逆湯）",
+ m:"人參、附子（＋龍骨、牡蠣）"},
+
+{c:"時行疾病",d:"夏季熱",z:"暑傷肺胃",f:"清暑益氣（養陰生津）",r:"王氏清暑益氣湯",
+ m:"西洋參、石斛、麥冬、黃連、竹葉、荷梗、知母、甘草、粳米、西瓜翠衣"},
+{c:"時行疾病",d:"夏季熱",z:"上盛下虛",f:"溫補腎陽，清心護陰（溫下清上）",r:"溫下清上湯",
+ m:"附子、黃連、磁石、補骨脂、菟絲子、覆盆子、桑螵蛸、白蓮鬚、縮泉丸"},
+
+/* ===== 其他病證 ===== */
+{c:"其他",d:"紫癜",z:"風熱傷絡",f:"疏風散邪（清熱涼血）",r:"連翹敗毒散加減",
+ m:"連翹、金銀花、荊芥、防風、柴胡、羌活、獨活、前胡、川芎、枳殼、桔梗、茯苓、甘草"},
+{c:"其他",d:"紫癜",z:"血熱妄行",f:"清熱解毒，涼血止血",r:"犀角地黃湯加味",
+ m:"犀角（水牛角代）、生地、白芍、丹皮"},
+{c:"其他",d:"紫癜",z:"氣不攝血",f:"健脾養心，益氣攝血",r:"歸脾湯加減",
+ m:"人參、黃芪、白朮、茯神、酸棗仁、龍眼肉、當歸、遠志、木香、炙甘草、生薑、大棗"},
+{c:"其他",d:"紫癜",z:"陰虛火旺",f:"滋陰降火，涼血止血",r:"大補陰丸加減",
+ m:"熟地、龜板、黃柏、知母（豬脊髓、蜂蜜）"},
+
+{c:"其他",d:"蛔蟲病",z:"蛔蟲證",f:"驅蛔殺蟲（調理脾胃）",r:"使君子散（久病脾虛胃熱：肥兒丸）",
+ m:"使君子、蕪荑、苦楝皮、甘草"},
+{c:"其他",d:"蛔蟲病",z:"蛔厥證",f:"安蛔定痛，繼以驅蛔",r:"烏梅丸",
+ m:"烏梅、細辛、乾薑、黃連、當歸、附子、蜀椒、桂枝、人參、黃柏"},
+
+{c:"其他",d:"胎黃",z:"濕熱熏蒸（陽黃）",f:"清熱利濕（退黃）",r:"茵陳蒿湯",
+ m:"茵陳、梔子、大黃"},
+{c:"其他",d:"胎黃",z:"寒濕阻滯（陰黃）",f:"溫中化濕（健脾退黃）",r:"茵陳理中湯",
+ m:"茵陳、人參、白朮、乾薑、甘草"},
+{c:"其他",d:"胎黃",z:"瘀積發黃",f:"化瘀消積（退黃）",r:"血府逐瘀湯",
+ m:"桃仁、紅花、當歸、生地、川芎、赤芍、牛膝、桔梗、柴胡、枳殼、甘草"}
+];
+
+/* ---------- 病的定義 & 總病機（按病名對應） ---------- */
+const DEFS={
+"感冒":{def:"俗稱「傷風」，小兒時期最常見的外感疾病，感受風邪所致，以發熱、惡寒、頭痛、鼻塞流涕、噴嚏、咳嗽為主要症狀。小兒感冒常見兼夾證：挾痰、挾滯、挾驚。",ji:"風邪客於肺衛，衛表失和，肺失宣肅。小兒臟腑嬌嫩、肌膚疏薄、衛外不固，且脾常不足、神氣怯弱，故易夾痰、夾滯、夾驚。"},
+"咳嗽":{def:"小兒肺部疾患中常見證候。有聲無痰為咳，有痰無聲為嗽，有聲有痰叫咳嗽。一年四季均可發病，冬春為多。",ji:"外感咳嗽為六淫犯肺，肺失宣肅；內傷咳嗽多因痰熱、痰濕、陰虛、氣虛，肺氣上逆。"},
+"肺炎喘嗽":{def:"小兒肺部疾患中常見的病證，以發熱、咳嗽、氣急鼻煽、痰涎上壅，甚則涕淚閉塞、張口抬肩、搖身擷肚為臨床主證。",ji:"外邪犯肺，肺氣鬱閉，痰熱壅盛，清肅之令不行；重者邪毒內陷厥陰，或正不勝邪致心陽虛衰。"},
+"哮喘":{def:"小兒時期常見的以發作性哮鳴氣促、呼氣延長為特徵的肺部疾患。哮指聲響言，喘指氣息言，哮必兼喘，通稱哮喘。",ji:"宿痰內伏（夙根），因氣候轉變、飲食等外因引觸，痰阻氣道，肺失肅降。發作期分寒熱兩證，緩解期見肺、脾、腎三臟之虛。"},
+"鵝口瘡":{def:"小兒口瘡之一，舌上滿布白屑，狀如鵝口，白屑周圍有紅暈，互相粘連，隨拭隨生。多見於新生兒、體弱嬰幼兒。",ji:"胎熱內盛或感受穢毒之邪，心脾積熱，熱毒循經上熏口舌；或先天不足、久病久瀉，腎陰虧損，水不制火，虛火上浮。"},
+"口瘡":{def:"口頰、舌邊、上顎、齒齦處發生潰瘍的病證，局部灼痛，或伴發熱、流涎。",ji:"脾胃積熱、心火上炎，熱蘊上熏口舌；或體稟虛弱，脾腎不足，水不制火，虛火上浮。"},
+"嘔吐":{def:"食物由胃中經口而出的病證，為小兒常見症狀。",ji:"胃失和降，胃氣上逆——乳食積滯、胃有積熱、脾胃虛寒、肝氣犯胃、跌仆驚恐皆可致之。"},
+"泄瀉":{def:"大便次數增多，糞質稀薄或如水樣為主症。小兒脾常不足，易於發病，夏秋多見。",ji:"脾胃受傷，運化失職，水反為濕，穀反為滯，清濁不分，併走大腸。「濕盛則濡瀉」；小兒易虛易實，重證可傷陰、傷陽。"},
+"腹痛":{def:"指腹部胃脘以下、臍之四旁、恥骨以上部位發生的疼痛。",ji:"氣血運行不暢或無力運行，不通則痛——寒邪、乳食、瘀血、臟腑虛冷所致。"},
+"厭食":{def:"小兒較長時期見食不貪、食慾不振、厭惡進食、食量減少，甚則拒食的常見病證。",ji:"脾胃不和，受納運化失健。病位在脾胃——脾運失健、胃陰不足、脾胃氣虛。"},
+"積滯":{def:"小兒內傷乳食，停聚中焦，積而不化，氣滯不行所形成的胃腸疾患，以不思乳食、食而不化、脘腹脹滿為特徵。傷食（急輕）→積滯（漸中）→疳證（久重）。",ji:"脾胃運化失調，乳食停聚中焦，積而不化，氣滯不行。"},
+"疳證":{def:"餵養不當或多種疾病影響，致脾胃受損、氣液耗傷而形成的慢性疾病，以形體消瘦、面黃髮枯、精神萎靡或煩躁為特徵。「疳者甘也」（病因）、「疳者乾也」（病證）。",ji:"脾胃受損，氣液耗傷。疳氣→疳積→乾疳，久則累及他臟而生眼疳、心疳、疳腫脹等兼證。"},
+"急驚風":{def:"以抽搐伴神昏為特徵，起病急暴，屬陽屬實。驚風四證：痰、熱、驚、風；八候：搐搦顫掣反引竄視。",ji:"感受時邪，易從熱化，熱極生痰生風，痰盛發驚，驚盛生風。病變部位主要在心肝二經。"},
+"慢驚風":{def:"病久中虛而抽搐者，屬陰屬虛。多見於大病久病之後，或急驚風遷延不愈轉化而成。",ji:"脾陽虛衰，土虛木亢；或脾腎陽衰，陰盛陽衰；或肝腎陰虧，水不涵木，虛風內動。"},
+"水腫":{def:"以肌膚浮腫及小便短少為主證的病證（小兒多見於急、慢性腎炎）。",ji:"風邪外侵、瘡毒濕熱內歸，肺脾腎三臟功能失調，水濕氾濫肌膚；變證可凌心射肺、邪陷心肝、水毒內閉。"},
+"尿頻":{def:"常見泌尿道疾病，以尿頻、尿急為特徵，好發於嬰幼兒，女孩多見。",ji:"濕熱下注，蘊結膀胱，氣化失司；病久脾腎氣虛，膀胱失約。"},
+"遺尿":{def:"小兒睡中小便自遺，醒後方覺。超過3歲以上幼童不能自主控制排尿，熟睡時經常遺尿，輕者數夜一次，重者一夜數次。",ji:"膀胱氣化功能失調，不能約束水道——下元虛寒、脾肺氣虛、肝經濕熱所致。"},
+"麻疹":{def:"由外感麻毒引起的呼吸道傳染病，以發熱、咳嗽、流涕、眼瞼紅赤淚水汪汪、口腔麻疹黏膜斑、周身紅色斑丘疹為特徵。",ji:"麻毒時邪由口鼻而入，犯於肺脾。順證邪透肌表（初熱→見形→恢復）；逆證毒閉於肺、熱毒攻喉、邪陷心肝。"},
+"風痧":{def:"即風疹。證情一般較輕微，初起類似傷風感冒，輕度發熱、咳嗽，疹點細小稀疏，耳後及枕部臖核腫大。",ji:"外感風熱時邪，鬱於肺衛，蘊於肌腠，發於肌膚。"},
+"丹痧":{def:"即猩紅熱，屬急性呼吸道傳染病，以發熱、咽喉腫痛或伴腐爛、全身瀰漫猩紅色皮疹、疹後脫屑為特徵。",ji:"痧毒疫邪從口鼻而入，蘊於肺胃，化火入裏，毒在氣營，外透肌表；後期邪毒傷陰。"},
+"水痘":{def:"由外感時行邪毒引起的急性傳染病，以發熱、皮膚分批出現丘疹、疱疹、結痂為特徵。疱疹橢圓形、漿液清亮、分批出現。",ji:"時行邪毒經口鼻而入，蘊鬱肺脾，與內濕相搏，外發肌表。"},
+"痄腮":{def:"即流行性腮腺炎，以發熱、耳下腮部漫腫疼痛為特徵的時行疾病。",ji:"外感風溫邪毒，從口鼻而入，壅阻少陽經脈，鬱而不散，結於腮部；足少陽與足厥陰相表裏，可邪毒引睪竄腹，甚則內陷心肝。"},
+"頓咳":{def:"即百日咳，小兒時期常見的呼吸道傳染病之一，以陣發性痙攣性咳嗽、咳末有雞鳴樣吸氣性回聲、病程纏綿為特徵。",ji:"時行疫邪從口鼻而入，侵襲肺衛，夾伏痰交結氣道，肺失肅降，肺氣上逆。分初咳、痙咳、恢復三期論治。"},
+"小兒暑溫":{def:"感受暑溫邪毒引起的熱性病證（流行性乙型腦炎），以高熱、抽風、昏迷為主要表現，發病急劇，傳變迅速。",ji:"暑溫邪毒襲人，熱盛生風，風盛動痰，痰盛生驚；按衛氣營血傳變。"},
+"疫毒痢":{def:"發病突然，以高熱、抽風（抽搐）、昏迷（神昏）為臨床主症的急重痢疾，早期可未見下痢。多發於夏秋季。",ji:"疫毒之邪從口而入，蘊伏腸胃，濕熱癘氣內蘊，毒邪內閉，閉竄心肝；甚則正不勝邪，內閉外脫。"},
+"夏季熱":{def:"嬰幼兒特有疾病，發生於盛夏，以長期發熱、口渴多飲、多尿、汗閉或少汗為特徵，秋涼後自愈。",ji:"小兒體質不耐暑氣熏蒸——暑傷肺胃，津氣耗傷；或素體脾腎虛弱，真陽不足，上盛下虛。"},
+"紫癜":{def:"小兒出血性疾病，血液溢於皮膚、黏膜之下，出現瘀點瘀斑，壓之不退色，常伴鼻衄、齒衄。",ji:"外受邪熱，內伏血分，迫血妄行；或氣虛不攝、陰虛火旺，血不歸經，溢於脈外。"},
+"蛔蟲病":{def:"腸道蟲證之一，以食欲不振、面色萎黃、臍周疼痛時作時止、大便下蟲為主要表現；蟲體鑽竄膽道則成蛔厥。",ji:"吞入感染性蛔蟲卵，蟲踞腸中，擾亂脾胃氣機，耗傷氣血；蛔蟲上竄，鑽入膽道，則氣機逆亂而蛔厥。"},
+"胎黃":{def:"以嬰兒出生後全身皮膚、鞏膜發黃為特徵。生理性胎黃可自行消退；病理性胎黃出現早、程度重、持續不退或退而復現。",ji:"濕熱熏蒸或寒濕阻滯，或瘀積內阻，肝失疏泄，膽液外溢，透發於肌膚。"}
+};
+
+/* ---------- 遊戲邏輯 ---------- */
+const LAYER_DEFS=[
+  {key:"def", cls:"l-def", icon:"義", title:"定義 · 總病機"},
+  {key:"f", cls:"l-zhifa", icon:"治", title:"治法"},
+  {key:"r", cls:"l-fang",  icon:"方", title:"用方"},
+  {key:"yao", cls:"l-yao", icon:"藥", title:"藥物組成"}
+];
+const cats = ["全部", ...Array.from(new Set(DATA.map(x=>x.c)))];
+let state = { cat:"全部", order:[], idx:0, stage:0, marks:{}, reviewMode:false };
+
+function indicesForCat(cat){
+  let arr = DATA.map((x,i)=>i).filter(i=> cat==="全部" || DATA[i].c===cat);
+  if(state.reviewMode) arr = arr.filter(i=> state.marks[i]==="no");
+  return arr;
+}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+function buildCats(){
+  const wrap=document.getElementById("cats"); wrap.innerHTML="";
+  cats.forEach(c=>{
+    const b=document.createElement("button");
+    b.className="cat"+(c===state.cat?" active":"");
+    const n = c==="全部"?DATA.length:DATA.filter(x=>x.c===c).length;
+    b.textContent=`${c}·${n}`;
+    b.onclick=()=>{state.cat=c;state.reviewMode=false;startDeck();};
+    wrap.appendChild(b);
+  });
+}
+function startDeck(){
+  state.order = indicesForCat(state.cat);
+  state.idx=0; state.stage=0;
+  buildCats(); render();
+}
+function setStats(){
+  const ok=Object.values(state.marks).filter(v=>v==="ok").length;
+  const no=Object.values(state.marks).filter(v=>v==="no").length;
+  document.getElementById("s-ok").textContent=ok;
+  document.getElementById("s-no").textContent=no;
+  document.getElementById("s-pos").textContent=Math.min(state.idx+1,state.order.length);
+  document.getElementById("s-total").textContent=state.order.length;
+  const pct=state.order.length? (state.idx/state.order.length*100):0;
+  document.getElementById("bar").style.width=pct+"%";
+}
+function render(){
+  const area=document.getElementById("cardArea");
+  if(state.order.length===0){
+    area.innerHTML=`<div class="card"><div class="done"><div class="big">🎉</div><h2>冇卡喇！</h2><p class="sub">呢個分類／「要溫」清單已清空。</p></div></div>`;
+    setStats(); return;
+  }
+  if(state.idx>=state.order.length){
+    const ok=Object.values(state.marks).filter(v=>v==="ok").length;
+    area.innerHTML=`<div class="card"><div class="done">
+      <div class="big">🏆</div><h2>完成呢副牌！</h2>
+      <p class="sub">已過 ${state.order.length} 張卡 · 標記識得 ${ok} 張</p>
+      <div class="controls" style="margin-top:22px">
+        <button class="btn ok" onclick="state.idx=0;state.stage=0;render()">↺ 再嚟一次</button>
+        <button class="btn no" onclick="state.reviewMode=true;startDeck()">⚠️ 集中溫「要溫」</button>
+      </div></div></div>`;
+    setStats(); return;
+  }
+  const it=DATA[state.order[state.idx]];
+  const gi=state.order[state.idx];
+  let layersHTML="";
+  LAYER_DEFS.forEach((L,li)=>{
+    const open = state.stage>li;
+    const locked = state.stage<li;
+    let val="";
+    if(L.key==="def"){
+      const D=DEFS[it.d]||{def:"—",ji:"—"};
+      val=`<div class="deftxt"><b>定義：</b>${D.def}</div><div class="ji"><b>總病機：</b>${D.ji}</div>`;
+    }
+    if(L.key==="f") val=`<div class="val">${it.f}</div>`;
+    if(L.key==="r") val=`<div class="val">${it.r}</div>`;
+    if(L.key==="yao") val=`<div class="compose">${it.m}</div>`;
+    layersHTML+=`<div class="layer ${L.cls} ${open?'open':''} ${locked?'locked':''}" data-li="${li}">
+      <div class="lh"><span class="ico">${open?'✓':L.icon}</span>${L.title}${locked?' <span style="margin-left:auto;font-size:11px">🔒</span>':''}</div>
+      <div class="body">${val}</div></div>`;
+  });
+  const fullyRevealed = state.stage>=LAYER_DEFS.length;
+  area.innerHTML=`
+    <div class="card" id="theCard">
+      <span class="badge">${it.c}</span>
+      <div class="disease">${it.d}</div>
+      <div class="zheng">${it.z}</div>
+      <div class="layers">${layersHTML}</div>
+      ${!fullyRevealed?`<div class="tap-hint">👆 撳卡／撳掣 逐層揭開</div>`:``}
+    </div>
+    <div class="controls">
+      ${!fullyRevealed
+        ? `<button class="btn reveal" id="revealBtn">揭開：${LAYER_DEFS[state.stage].title} ▾</button>`
+        : `<button class="btn no" id="markNo">⚠️ 要再溫</button>
+           <button class="btn ok" id="markOk">✓ 識得</button>`}
+    </div>
+    <div class="nav">
+      <button class="btn" onclick="prevCard()">◀ 上一張</button>
+      <button class="btn" onclick="nextCard()">下一張 ▶</button>
+    </div>`;
+
+  const card=document.getElementById("theCard");
+  card.onclick=(e)=>{ if(e.target.closest('.layer')) return; if(state.stage<LAYER_DEFS.length){state.stage++;render();} };
+  card.querySelectorAll('.layer').forEach(el=>{
+    el.querySelector('.lh').onclick=(ev)=>{ev.stopPropagation();
+      const li=+el.dataset.li;
+      if(li===state.stage){state.stage++;render();}
+    };
+  });
+  const rb=document.getElementById("revealBtn"); if(rb) rb.onclick=()=>{state.stage++;render();};
+  const mo=document.getElementById("markOk"); if(mo) mo.onclick=()=>{state.marks[gi]="ok";nextCard();};
+  const mn=document.getElementById("markNo"); if(mn) mn.onclick=()=>{state.marks[gi]="no";nextCard();};
+  setStats();
+}
+function nextCard(){ state.idx++; state.stage=0; render(); }
+function prevCard(){ if(state.idx>0){state.idx--; state.stage=0; render();} }
+
+document.getElementById("t-shuffle").onclick=()=>{shuffle(state.order);state.idx=0;state.stage=0;render();};
+document.getElementById("t-review").onclick=()=>{
+  const noCount=Object.values(state.marks).filter(v=>v==="no").length;
+  if(noCount===0){alert("仲未標記過「要再溫」嘅卡 😊");return;}
+  state.reviewMode=true; startDeck();
+};
+document.getElementById("t-reset").onclick=()=>{
+  if(confirm("重新開始？會清除「識得／要溫」標記。")){state.marks={};state.reviewMode=false;startDeck();}
+};
+
+document.addEventListener("keydown",e=>{
+  if(e.key==="ArrowRight"||e.key===" "){
+    if(state.stage<LAYER_DEFS.length){state.stage++;render();}else nextCard(); e.preventDefault();
+  }else if(e.key==="ArrowLeft"){prevCard();}
+});
+
+buildCats(); startDeck();
+</script>
+</body>
+</html>
