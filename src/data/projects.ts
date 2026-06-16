@@ -9,6 +9,7 @@ export const projectsData: {
   {
     id: "iot-watch-platform",
     imageUrls: [
+      "/images/smart-watch-architecture.png",
       "/images/smart-watch-client.png",
       "/images/smart-watch-manager.png",
       "/images/smart-watch-manager-flutter.png",
